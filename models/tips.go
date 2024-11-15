@@ -1,17 +1,16 @@
-// models/tips.go
 package models
 
 import (
-	"strings"
-	"time"
+    "strings"
+    "time"
 )
 
 type Tips struct {
-    ID        uint64   `json:"id"`
-    UserID    uint64   `json:"user_id"`  // Gunakan uint64 di sini
+    ID        uint     `json:"id" gorm:"primaryKey;autoIncrement"`       
+    UserID    uint     `json:"user_id"`  // Ubah menjadi uint
     Title     string   `json:"title"`
     Content   string   `json:"content"`
-    Leftovers string   `json:"leftovers"` // Data disimpan sebagai string di database
+    Leftovers string   `json:"leftovers"`
     CreatedAt time.Time
     UpdatedAt time.Time
 }

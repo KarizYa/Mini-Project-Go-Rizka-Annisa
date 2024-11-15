@@ -1,4 +1,3 @@
-// usecases/tips_usecase.go
 package usecases
 
 import (
@@ -16,14 +15,16 @@ func NewTipsUsecase(tipsRepo repositories.TipsRepository) *TipsUsecase {
     }
 }
 
-// Menampilkan semua tips berdasarkan userID
-func (u *TipsUsecase) GetAllTips(userID uint64) ([]models.Tips, error) {
-    return u.TipsRepo.GetAllTipsByUserID(userID)
+// Menampilkan semua tips tanpa filter berdasarkan userID
+func (u *TipsUsecase) GetAllTips() ([]models.Tips, error) {
+    // Ambil semua tips tanpa memfilter berdasarkan userID
+    return u.TipsRepo.GetAllTips() 
 }
 
-// Menampilkan tips berdasarkan sisa makanan
-func (u *TipsUsecase) GetTipsByLeftover(userID uint64, ingredient string) ([]models.Tips, error) {
-    return u.TipsRepo.GetTipsByLeftover(userID, ingredient)
+// Menampilkan tips berdasarkan sisa makanan tanpa filter userID
+func (u *TipsUsecase) GetTipsByLeftover(ingredient string) ([]models.Tips, error) {
+    // Ambil tips berdasarkan sisa makanan tanpa memfilter berdasarkan userID
+    return u.TipsRepo.GetTipsByLeftover(ingredient)
 }
 
 // Menambahkan tips baru
@@ -37,6 +38,6 @@ func (uc *TipsUsecase) UpdateTips(tips models.Tips) error {
 }
 
 // Menghapus tips
-func (u *TipsUsecase) DeleteTips(userID uint64, tipID uint) error {
+func (u *TipsUsecase) DeleteTips(userID uint, tipID uint) error {
     return u.TipsRepo.DeleteTips(userID, tipID)
 }

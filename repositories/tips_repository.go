@@ -1,76 +1,55 @@
-// repositories/tips_repository.go
 package repositories
 
 import (
 	"mini-project/models"
-	"strings"
-
 	"gorm.io/gorm"
 )
 
 type TipsRepository interface {
-	GetAllTipsByUserID(userID uint64) ([]models.Tips, error)
-	GetTipsByLeftover(userID uint64, ingredient string) ([]models.Tips, error)
-	Create(tips models.Tips) error
-	Update(tips models.Tips) error
-	DeleteTips(userID uint64, tipID uint) error
+    GetAllTips() ([]models.Tips, error) // Ambil semua tips tanpa filter userID
+    GetTipsByLeftover(ingredient string) ([]models.Tips, error) // Ambil tips berdasarkan bahan makanan tanpa filter userID
+    Create(tips models.Tips) error
+    Update(tips models.Tips) error
+    DeleteTips(userID uint, tipID uint) error
 }
 
 type tipsRepository struct {
-	db *gorm.DB
+    DB *gorm.DB
 }
 
-func NewTipsRepository(db *gorm.DB) TipsRepository {
-	return &tipsRepository{
-		db: db,
-	}
+func NewTipsRepository(DB *gorm.DB) TipsRepository {
+    return &tipsRepository{DB}
 }
 
-// Mengambil semua tips berdasarkan userID
-func (r *tipsRepository) GetAllTipsByUserID(userID uint64) ([]models.Tips, error) {
-	var tips []models.Tips
-	err := r.db.Where("user_id = ?", userID).Find(&tips).Error
-	if err != nil {
-		return nil, err
-	}
-
-	// Mengonversi Leftovers menjadi slice string setelah data diambil dari database
-	for i := range tips {
-		tips[i].Leftovers = strings.Join(tips[i].GetLeftoversSlice(), ",") // Update Leftovers field
-	}
-	return tips, nil
+// Fungsi untuk mendapatkan semua tips tanpa filter berdasarkan userID
+func (r *tipsRepository) GetAllTips() ([]models.Tips, error) {
+    var tips []models.Tips
+    if err := r.DB.Find(&tips).Error; err != nil {
+        return nil, err
+    }
+    return tips, nil
 }
 
-// Mengambil tips berdasarkan sisa makanan dan userID
-func (r *tipsRepository) GetTipsByLeftover(userID uint64, ingredient string) ([]models.Tips, error) {
-	var tips []models.Tips
-	err := r.db.Where("user_id = ? AND FIND_IN_SET(?, leftovers) > 0", userID, ingredient).Find(&tips).Error
-	if err != nil {
-		return nil, err
-	}
-
-	// Mengonversi Leftovers menjadi slice string setelah data diambil dari database
-	for i := range tips {
-		tips[i].Leftovers = strings.Join(tips[i].GetLeftoversSlice(), ",") // Update Leftovers field
-	}
-	return tips, nil
+// Fungsi untuk mendapatkan tips berdasarkan sisa makanan tanpa filter userID
+func (r *tipsRepository) GetTipsByLeftover(ingredient string) ([]models.Tips, error) {
+    var tips []models.Tips
+    if err := r.DB.Where("leftovers LIKE ?", "%"+ingredient+"%").Find(&tips).Error; err != nil {
+        return nil, err
+    }
+    return tips, nil
 }
 
-// Menambahkan tips baru
+// Fungsi untuk menambahkan tips baru
 func (r *tipsRepository) Create(tips models.Tips) error {
-	// Mengonversi Leftovers menjadi string sebelum disimpan ke database
-	tips.SetLeftoversSlice(tips.GetLeftoversSlice()) // Mengubah Leftovers menjadi string
-	return r.db.Create(&tips).Error
+    return r.DB.Create(&tips).Error
 }
 
-// Memperbarui tips
+// Fungsi untuk memperbarui tips
 func (r *tipsRepository) Update(tips models.Tips) error {
-	// Mengonversi Leftovers menjadi string sebelum memperbarui data di database
-	tips.SetLeftoversSlice(tips.GetLeftoversSlice()) // Mengubah Leftovers menjadi string
-	return r.db.Save(&tips).Error
+    return r.DB.Save(&tips).Error
 }
 
-// Menghapus tips berdasarkan userID dan ID
-func (r *tipsRepository) DeleteTips(userID uint64, tipID uint) error {
-	return r.db.Where("id = ? AND user_id = ?", tipID, userID).Delete(&models.Tips{}).Error
+// Fungsi untuk menghapus tips
+func (r *tipsRepository) DeleteTips(userID uint, tipID uint) error {
+    return r.DB.Where("user_id = ? AND id = ?", userID, tipID).Delete(&models.Tips{}).Error
 }
