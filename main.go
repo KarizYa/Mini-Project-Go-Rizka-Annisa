@@ -14,42 +14,42 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+    err := godotenv.Load()
+    if err != nil {
+        log.Fatal("Error loading .env file")
+    }
 
-	db, err := config.InitDB()
-	if err != nil {
-		log.Fatal(err)
-	}
+    db, err := config.InitDB()
+    if err != nil {
+        log.Fatal(err)
+    }
 
-	config.MigrateDatabase(db)
+    config.MigrateDatabase(db)
 
-	userRepo := repositories.NewUserRepository(db)
-	userUsecase := usecases.NewUserUsecase(userRepo)
-	userHandler := http.NewUserHandler(userUsecase)
+    userRepo := repositories.NewUserRepository(db)
+    userUsecase := usecases.NewUserUsecase(userRepo)
+    userHandler := http.NewUserHandler(userUsecase)
 
-	leftoverRepo := repositories.NewLeftoverRepository(db)
-	leftoverUsecase := usecases.NewLeftoverUsecase(leftoverRepo)
+    leftoverRepo := repositories.NewLeftoverRepository(db)
+    leftoverUsecase := usecases.NewLeftoverUsecase(leftoverRepo)
 
-	geminiRepo := repositories.NewGeminiRepository() 
-	suggestionUsecase := usecases.NewSuggestionUseCase(geminiRepo) 
+    geminiRepo := repositories.NewGeminiRepository()
+    suggestionUsecase := usecases.NewSuggestionUseCase(geminiRepo)
 
-	recipeAPI := external.NewRecipeAPI("https://www.themealdb.com/api/json/v1/1") 
-	recipeUsecase := usecases.NewRecipeUsecase(recipeAPI)
+    recipeAPI := external.NewRecipeAPI("https://www.themealdb.com/api/json/v1/1")
+    recipeUsecase := usecases.NewRecipeUsecase(recipeAPI)
 
-	tipsRepo := repositories.NewTipsRepository(db)
-	tipsUsecase := usecases.NewTipsUsecase(tipsRepo)
+    tipsRepo := repositories.NewTipsRepository(db)
+    tipsUsecase := usecases.NewTipsUsecase(tipsRepo, userRepo) 
 
-	e := echo.New()
+    e := echo.New()
 
-	routes.NewRouter(e, userHandler)
+    routes.NewRouter(e, userHandler)
 
-	routes.InitRoutes(e, leftoverUsecase, recipeUsecase, tipsUsecase, suggestionUsecase)
+    routes.InitRoutes(e, leftoverUsecase, recipeUsecase, tipsUsecase, suggestionUsecase)
 
-	log.Println("Server started on port 8000")
-	if err := e.Start(":8000"); err != nil {
-		log.Fatal(err)
-	}
+    log.Println("Server started on port 8000")
+    if err := e.Start(":8000"); err != nil {
+        log.Fatal(err)
+    }
 }
