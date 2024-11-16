@@ -17,12 +17,10 @@ type userRepository struct {
     db *gorm.DB
 }
 
-// NewUserRepository creates a new UserRepository
 func NewUserRepository(db *gorm.DB) UserRepository {
     return &userRepository{db}
 }
 
-// Register saves a new user into the database
 func (r *userRepository) Register(user models.User) error {
     result := r.db.Create(&user)
     if result.Error != nil {
@@ -31,12 +29,10 @@ func (r *userRepository) Register(user models.User) error {
     return nil
 }
 
-// GetByEmail retrieves a user by their email from the database
 func (r *userRepository) GetByEmail(email string) (models.User, error) {
     var user models.User
     result := r.db.Where("email = ? AND (deleted_at IS NULL OR deleted_at = '0000-00-00 00:00:00.000')", email).First(&user)
     
-    // Logging email query
     log.Printf("Querying for user with email: %s", email)
 
     if result.Error != nil {
@@ -48,7 +44,6 @@ func (r *userRepository) GetByEmail(email string) (models.User, error) {
         return user, result.Error
     }
 
-    // Log if user found
     log.Printf("User found: %+v", user)
     return user, nil
 }

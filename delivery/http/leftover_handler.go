@@ -29,7 +29,7 @@ func (h *LeftoverHandler) CreateLeftover(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Invalid input"})
 	}
 
-	leftover.UserID = userID // Menetapkan userID pada leftover
+	leftover.UserID = userID 
 	if err := h.Usecase.CreateLeftover(&leftover); err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Failed to create leftover"})
 	}
@@ -37,7 +37,6 @@ func (h *LeftoverHandler) CreateLeftover(c echo.Context) error {
 	return c.JSON(http.StatusCreated, leftover)
 }
 
-// Fungsi untuk mengambil semua sisa makanan untuk user yang sudah login
 func (h *LeftoverHandler) GetAllLeftovers(c echo.Context) error {
 	userID, ok := c.Get("userID").(uint) 
 	if !ok {
@@ -52,7 +51,6 @@ func (h *LeftoverHandler) GetAllLeftovers(c echo.Context) error {
 	return c.JSON(http.StatusOK, leftovers)
 }
 
-// Fungsi untuk mengambil sisa makanan berdasarkan ID
 func (h *LeftoverHandler) GetLeftoverByID(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -67,7 +65,6 @@ func (h *LeftoverHandler) GetLeftoverByID(c echo.Context) error {
 	return c.JSON(http.StatusOK, leftover)
 }
 
-// Fungsi untuk memperbarui sisa makanan
 func (h *LeftoverHandler) UpdateLeftover(c echo.Context) error {
 	var leftover models.Leftover
 	if err := c.Bind(&leftover); err != nil {
@@ -81,7 +78,6 @@ func (h *LeftoverHandler) UpdateLeftover(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{"message": "Leftover updated successfully"})
 }
 
-// Fungsi untuk menghapus sisa makanan berdasarkan ID
 func (h *LeftoverHandler) DeleteLeftover(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

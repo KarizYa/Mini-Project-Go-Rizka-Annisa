@@ -9,45 +9,47 @@ import (
 	"mini-project/routes"
 	"mini-project/usecases"
 
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 )
 
 func main() {
-    db, err := config.InitDB()
-    if err != nil {
-        log.Fatal(err)
-    }
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 
-    config.MigrateDatabase(db)
+	db, err := config.InitDB()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    // Inisialisasi repository dan usecase untuk user
-    userRepo := repositories.NewUserRepository(db)
-    userUsecase := usecases.NewUserUsecase(userRepo)
-    userHandler := http.NewUserHandler(userUsecase)
+	config.MigrateDatabase(db)
 
-    // Inisialisasi repository dan usecase untuk leftover
-    leftoverRepo := repositories.NewLeftoverRepository(db)
-    leftoverUsecase := usecases.NewLeftoverUsecase(leftoverRepo)
+	userRepo := repositories.NewUserRepository(db)
+	userUsecase := usecases.NewUserUsecase(userRepo)
+	userHandler := http.NewUserHandler(userUsecase)
 
-    // Inisialisasi RecipeAPI untuk menggunakan API TheMealDB
-    recipeAPI := external.NewRecipeAPI("https://www.themealdb.com/api/json/v1/1") // Base URL API
-    recipeUsecase := usecases.NewRecipeUsecase(recipeAPI)
+	leftoverRepo := repositories.NewLeftoverRepository(db)
+	leftoverUsecase := usecases.NewLeftoverUsecase(leftoverRepo)
 
-    // Inisialisasi repository dan usecase untuk tips
-    tipsRepo := repositories.NewTipsRepository(db)
-    tipsUsecase := usecases.NewTipsUsecase(tipsRepo) // Perbaikan: Gunakan tipsUsecase
+	geminiRepo := repositories.NewGeminiRepository() 
+	suggestionUsecase := usecases.NewSuggestionUseCase(geminiRepo) 
 
-    // Membuat echo instance
-    e := echo.New()
+	recipeAPI := external.NewRecipeAPI("https://www.themealdb.com/api/json/v1/1") 
+	recipeUsecase := usecases.NewRecipeUsecase(recipeAPI)
 
-    // Setup routes untuk user
-    routes.NewRouter(e, userHandler)
+	tipsRepo := repositories.NewTipsRepository(db)
+	tipsUsecase := usecases.NewTipsUsecase(tipsRepo)
 
-    // Menambahkan leftoverUsecase, recipeUsecase, dan tipsUsecase ke routes
-    routes.InitRoutes(e, leftoverUsecase, recipeUsecase, tipsUsecase) // Kirimkan tipsUsecase ke InitRoutes
+	e := echo.New()
 
-    log.Println("Server started on port 8000")
-    if err := e.Start(":8000"); err != nil {
-        log.Fatal(err)
-    }
+	routes.NewRouter(e, userHandler)
+
+	routes.InitRoutes(e, leftoverUsecase, recipeUsecase, tipsUsecase, suggestionUsecase)
+
+	log.Println("Server started on port 8000")
+	if err := e.Start(":8000"); err != nil {
+		log.Fatal(err)
+	}
 }
