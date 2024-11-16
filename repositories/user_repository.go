@@ -11,7 +11,10 @@ import (
 type UserRepository interface {
     Register(user models.User) error
     GetByEmail(email string) (models.User, error)
+    GetByID(userID uint) (models.User, error) 
+    Update(user models.User) error          
 }
+
 
 type userRepository struct {
     db *gorm.DB
@@ -45,5 +48,18 @@ func (r *userRepository) GetByEmail(email string) (models.User, error) {
     }
 
     log.Printf("User found: %+v", user)
+    return user, nil
+}
+
+func (r *userRepository) Update(user models.User) error {
+    return r.db.Save(&user).Error
+}
+
+func (r *userRepository) GetByID(userID uint) (models.User, error) {
+    var user models.User
+    result := r.db.First(&user, userID)
+    if result.Error != nil {
+        return user, result.Error
+    }
     return user, nil
 }
