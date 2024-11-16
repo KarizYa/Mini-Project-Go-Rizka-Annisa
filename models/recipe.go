@@ -1,6 +1,5 @@
 package models
 
-// Struktur data untuk resep yang disesuaikan dengan API TheMealDB
 type Recipe struct {
 	IDMeal       string         `json:"idMeal"`
 	Title        string         `json:"strMeal"`

@@ -11,16 +11,13 @@ type RecipeAPI struct {
     BaseURL string
 }
 
-// Fungsi untuk membuat instance RecipeAPI baru
 func NewRecipeAPI(baseURL string) *RecipeAPI {
     return &RecipeAPI{
         BaseURL: baseURL,
     }
 }
 
-// Fungsi untuk mencari resep berdasarkan nama makanan
 func (r *RecipeAPI) GetRecipesByName(mealName string) ([]models.Recipe, error) {
-    // URL untuk endpoint pencarian berdasarkan nama
     url := fmt.Sprintf("%s/search.php?s=%s", r.BaseURL, mealName)
     resp, err := http.Get(url)
     if err != nil {
@@ -32,7 +29,6 @@ func (r *RecipeAPI) GetRecipesByName(mealName string) ([]models.Recipe, error) {
         return nil, fmt.Errorf("failed to fetch recipes: %s", resp.Status)
     }
 
-    // Dekode respons JSON ke dalam struct result
     var result struct {
         Meals []models.Recipe `json:"meals"`
     }

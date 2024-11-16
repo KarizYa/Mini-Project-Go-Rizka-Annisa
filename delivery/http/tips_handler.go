@@ -13,17 +13,14 @@ type TipsHandler struct {
     TipsUsecase *usecases.TipsUsecase
 }
 
-// Constructor untuk TipsHandler
 func NewTipsHandler(tipsUsecase *usecases.TipsUsecase) *TipsHandler {
     return &TipsHandler{
         TipsUsecase: tipsUsecase,
     }
 }
 
-// Fungsi untuk mendapatkan semua tips (tanpa filter user_id)
 func (h *TipsHandler) GetAllTips(c echo.Context) error {
-    // Hapus penggunaan userID dari konteks, karena kita ingin mengambil semua tips
-    tips, err := h.TipsUsecase.GetAllTips() // Tidak lagi menggunakan userID
+    tips, err := h.TipsUsecase.GetAllTips() 
     if err != nil {
         return echo.NewHTTPError(http.StatusInternalServerError, "Failed to fetch tips")
     }
@@ -31,11 +28,9 @@ func (h *TipsHandler) GetAllTips(c echo.Context) error {
     return c.JSON(http.StatusOK, tips)
 }
 
-// Fungsi untuk mendapatkan tips berdasarkan sisa makanan (tanpa filter user_id)
 func (h *TipsHandler) GetTipsByLeftover(c echo.Context) error {
-    // Hapus penggunaan userID dari konteks, karena kita ingin mengambil semua tips
     ingredient := c.QueryParam("ingredient")
-    tips, err := h.TipsUsecase.GetTipsByLeftover(ingredient) // Tidak lagi menggunakan userID
+    tips, err := h.TipsUsecase.GetTipsByLeftover(ingredient) 
     if err != nil {
         return echo.NewHTTPError(http.StatusInternalServerError, "Failed to fetch tips")
     }
@@ -43,10 +38,8 @@ func (h *TipsHandler) GetTipsByLeftover(c echo.Context) error {
     return c.JSON(http.StatusOK, tips)
 }
 
-// Fungsi untuk menambahkan tips baru
 func (h *TipsHandler) CreateTips(c echo.Context) error {
-    // Mengambil user_id dari konteks
-    userID, ok := c.Get("userID").(uint) // Mengubah menjadi uint
+    userID, ok := c.Get("userID").(uint) 
     if !ok {
         return echo.NewHTTPError(http.StatusUnauthorized, "Unauthorized")
     }
@@ -65,10 +58,8 @@ func (h *TipsHandler) CreateTips(c echo.Context) error {
     return c.NoContent(http.StatusCreated)
 }
 
-// Fungsi untuk memperbarui tips
 func (h *TipsHandler) UpdateTips(c echo.Context) error {
-    // Mengambil user_id dari konteks
-    userID, ok := c.Get("userID").(uint) // Mengubah menjadi uint
+    userID, ok := c.Get("userID").(uint) 
     if !ok {
         return echo.NewHTTPError(http.StatusUnauthorized, "Unauthorized")
     }
@@ -87,10 +78,8 @@ func (h *TipsHandler) UpdateTips(c echo.Context) error {
     return c.NoContent(http.StatusOK)
 }
 
-// Fungsi untuk menghapus tips
 func (h *TipsHandler) DeleteTips(c echo.Context) error {
-    // Mengambil user_id dari konteks
-    userID, ok := c.Get("userID").(uint) // Mengubah menjadi uint
+    userID, ok := c.Get("userID").(uint) 
     if !ok {
         return echo.NewHTTPError(http.StatusUnauthorized, "Unauthorized")
     }
@@ -101,7 +90,7 @@ func (h *TipsHandler) DeleteTips(c echo.Context) error {
         return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
     }
 
-    if err := h.TipsUsecase.DeleteTips(userID, uint(id)); // Menggunakan uint
+    if err := h.TipsUsecase.DeleteTips(userID, uint(id)); 
     err != nil {
         return echo.NewHTTPError(http.StatusInternalServerError, "Failed to delete tip")
     }

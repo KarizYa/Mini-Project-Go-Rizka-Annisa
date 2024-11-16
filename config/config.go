@@ -11,14 +11,12 @@ import (
 	"gorm.io/gorm"
 )
 
-// Load .env file
 func LoadEnvVariables() {
     if err := godotenv.Load(); err != nil {
         log.Fatalf("Error loading .env file")
     }
 }
 
-// InitDB initializes the database connection
 func InitDB() (*gorm.DB, error) {
     LoadEnvVariables()
 
