@@ -29,13 +29,14 @@ func (r *tipsRepository) GetAllTips() ([]models.Tips, error) {
     return tips, nil
 }
 
-func (r *tipsRepository) GetTipsByLeftover(ingredient string) ([]models.Tips, error) {
+func (r *tipsRepository) GetTipsByLeftover(leftover string) ([]models.Tips, error) {
     var tips []models.Tips
-    if err := r.DB.Where("leftovers LIKE ?", "%"+ingredient+"%").Find(&tips).Error; err != nil {
+    if err := r.DB.Where("leftovers LIKE ?", "%"+leftover+"%").Find(&tips).Error; err != nil {
         return nil, err
     }
     return tips, nil
 }
+
 
 func (r *tipsRepository) Create(tips models.Tips) error {
     return r.DB.Create(&tips).Error

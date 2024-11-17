@@ -34,7 +34,7 @@ func (u *leftoverUsecase) GetLeftoverByID(id uint) (models.Leftover, error) {
 }
 
 func (u *leftoverUsecase) UpdateLeftover(leftover *models.Leftover) error {
-    return u.repository.Update(leftover)
+	return u.repository.Update(leftover)
 }
 
 func (u *leftoverUsecase) DeleteLeftover(id uint) error {
