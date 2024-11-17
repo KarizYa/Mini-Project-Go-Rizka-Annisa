@@ -1,110 +1,108 @@
 package http
 
 import (
-    "mini-project/models"
-    "mini-project/usecases"
-    "net/http"
-    "strconv"
+	"mini-project/models"
+	"mini-project/usecases"
+	"mini-project/helper" 
+	"net/http"
+	"strconv"
 
-    "github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4"
 )
 
 type TipsHandler struct {
-    TipsUsecase *usecases.TipsUsecase
+	TipsUsecase *usecases.TipsUsecase
 }
 
-// Constructor untuk TipsHandler
 func NewTipsHandler(tipsUsecase *usecases.TipsUsecase) *TipsHandler {
-    return &TipsHandler{
-        TipsUsecase: tipsUsecase,
-    }
+	return &TipsHandler{
+		TipsUsecase: tipsUsecase,
+	}
 }
 
-// Fungsi untuk mendapatkan semua tips (tanpa filter user_id)
 func (h *TipsHandler) GetAllTips(c echo.Context) error {
-    // Hapus penggunaan userID dari konteks, karena kita ingin mengambil semua tips
-    tips, err := h.TipsUsecase.GetAllTips() // Tidak lagi menggunakan userID
-    if err != nil {
-        return echo.NewHTTPError(http.StatusInternalServerError, "Failed to fetch tips")
-    }
+	tips, err := h.TipsUsecase.GetAllTips()
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Failed to fetch tips")
+	}
 
-    return c.JSON(http.StatusOK, tips)
+	return c.JSON(http.StatusOK, helper.WrapResponse("Successfully fetched all tips", 200, "success", tips))
 }
 
-// Fungsi untuk mendapatkan tips berdasarkan sisa makanan (tanpa filter user_id)
 func (h *TipsHandler) GetTipsByLeftover(c echo.Context) error {
-    // Hapus penggunaan userID dari konteks, karena kita ingin mengambil semua tips
-    ingredient := c.QueryParam("ingredient")
-    tips, err := h.TipsUsecase.GetTipsByLeftover(ingredient) // Tidak lagi menggunakan userID
+    leftover := c.QueryParam("leftovers") 
+    if leftover == "" {
+        return echo.NewHTTPError(http.StatusBadRequest, "leftovers parameter is required")
+    }
+
+    tips, err := h.TipsUsecase.GetTipsByLeftover(leftover)
     if err != nil {
         return echo.NewHTTPError(http.StatusInternalServerError, "Failed to fetch tips")
     }
 
-    return c.JSON(http.StatusOK, tips)
+    return c.JSON(http.StatusOK, helper.WrapResponse("Successfully fetched tips for leftover", 200, "success", tips))
 }
 
-// Fungsi untuk menambahkan tips baru
+
 func (h *TipsHandler) CreateTips(c echo.Context) error {
-    // Mengambil user_id dari konteks
-    userID, ok := c.Get("userID").(uint) // Mengubah menjadi uint
-    if !ok {
-        return echo.NewHTTPError(http.StatusUnauthorized, "Unauthorized")
-    }
+	userID, ok := c.Get("userID").(uint)
+	if !ok {
+		return echo.NewHTTPError(http.StatusUnauthorized, "Unauthorized")
+	}
 
-    var req models.Tips
-    if err := c.Bind(&req); err != nil {
-        return echo.NewHTTPError(http.StatusBadRequest, "Invalid request payload")
-    }
+	var req models.Tips
+	if err := c.Bind(&req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid request payload")
+	}
 
-    req.UserID = userID
+	req.UserID = userID
 
-    if err := h.TipsUsecase.CreateTips(req); err != nil {
-        return echo.NewHTTPError(http.StatusInternalServerError, "Failed to create tip")
-    }
+	err := h.TipsUsecase.CreateTips(req) 
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Failed to create tip")
+	}
 
-    return c.NoContent(http.StatusCreated)
+	return c.JSON(http.StatusCreated, helper.WrapResponse("Successfully created tip", 201, "success", nil))
 }
 
-// Fungsi untuk memperbarui tips
 func (h *TipsHandler) UpdateTips(c echo.Context) error {
-    // Mengambil user_id dari konteks
-    userID, ok := c.Get("userID").(uint) // Mengubah menjadi uint
-    if !ok {
-        return echo.NewHTTPError(http.StatusUnauthorized, "Unauthorized")
-    }
+	userID, ok := c.Get("userID").(uint)
+	if !ok {
+		return echo.NewHTTPError(http.StatusUnauthorized, "Unauthorized")
+	}
 
-    var req models.Tips
-    if err := c.Bind(&req); err != nil {
-        return echo.NewHTTPError(http.StatusBadRequest, "Invalid request payload")
-    }
+	var req models.Tips
+	if err := c.Bind(&req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid request payload")
+	}
 
-    req.UserID = userID
+	req.UserID = userID
 
-    if err := h.TipsUsecase.UpdateTips(req); err != nil {
-        return echo.NewHTTPError(http.StatusInternalServerError, "Failed to update tip")
-    }
+	err := h.TipsUsecase.UpdateTips(req) 
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Failed to update tip")
+	}
 
-    return c.NoContent(http.StatusOK)
+	return c.JSON(http.StatusOK, helper.WrapResponse("Successfully updated tip", 200, "success", nil))
 }
 
-// Fungsi untuk menghapus tips
 func (h *TipsHandler) DeleteTips(c echo.Context) error {
-    // Mengambil user_id dari konteks
-    userID, ok := c.Get("userID").(uint) // Mengubah menjadi uint
+    userID, ok := c.Get("userID").(uint)
     if !ok {
         return echo.NewHTTPError(http.StatusUnauthorized, "Unauthorized")
     }
 
-    idStr := c.QueryParam("id")
+    idStr := c.Param("id") 
     id, err := strconv.Atoi(idStr)
     if err != nil {
         return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
     }
 
-    if err := h.TipsUsecase.DeleteTips(userID, uint(id)); // Menggunakan uint
-    err != nil {
+    err = h.TipsUsecase.DeleteTips(userID, uint(id))
+    if err != nil {
         return echo.NewHTTPError(http.StatusInternalServerError, "Failed to delete tip")
     }
 
-    return c.NoContent(http.StatusNoContent)
+    return c.JSON(http.StatusOK, helper.WrapResponse("Successfully deleted tip", 200, "success", map[string]interface{}{"id": id}))
 }
+

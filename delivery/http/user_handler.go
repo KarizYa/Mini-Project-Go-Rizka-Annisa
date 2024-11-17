@@ -3,6 +3,7 @@ package http
 import (
 	"mini-project/models"
 	"mini-project/usecases"
+	"mini-project/helper" 
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -16,42 +17,44 @@ func NewUserHandler(userUsecase usecases.UserUsecase) *UserHandler {
     return &UserHandler{userUsecase}
 }
 
-// Register endpoint untuk registrasi user baru
 func (h *UserHandler) Register(c echo.Context) error {
     var user models.User
     if err := c.Bind(&user); err != nil {
-        return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid input"})
+        return c.JSON(http.StatusBadRequest, helper.WrapResponse("Invalid input", 400, "error", nil))
     }
 
     if user.Email == "" || user.Password == "" {
-        return c.JSON(http.StatusBadRequest, map[string]string{"error": "Email and password are required"})
+        return c.JSON(http.StatusBadRequest, helper.WrapResponse("Email and password are required", 400, "error", nil))
     }
 
-    // Proses registrasi
     if err := h.userUsecase.Register(user); err != nil {
-        return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+        return c.JSON(http.StatusInternalServerError, helper.WrapResponse(err.Error(), 500, "error", nil))
     }
 
-    return c.JSON(http.StatusCreated, map[string]string{"message": "User registered successfully"})
+    return c.JSON(http.StatusCreated, helper.WrapResponse("User registered successfully", 201, "success", map[string]interface{}{
+        "email": user.Email,
+        "password": "",
+    }))
 }
 
-// Login endpoint untuk autentikasi dan menghasilkan token JWT
 func (h *UserHandler) Login(c echo.Context) error {
     var credentials models.Credentials
     if err := c.Bind(&credentials); err != nil {
-        return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid input"})
+        return c.JSON(http.StatusBadRequest, helper.WrapResponse("Invalid input", 400, "error", nil))
     }
 
     if credentials.Email == "" || credentials.Password == "" {
-        return c.JSON(http.StatusBadRequest, map[string]string{"error": "Email and password are required"})
+        return c.JSON(http.StatusBadRequest, helper.WrapResponse("Email and password are required", 400, "error", nil))
     }
 
-    // Proses login dan mendapatkan token
     token, err := h.userUsecase.Login(credentials)
     if err != nil {
-        // Error handling jika email atau password tidak cocok
-        return c.JSON(http.StatusUnauthorized, map[string]string{"error": err.Error()})
+        return c.JSON(http.StatusUnauthorized, helper.WrapResponse(err.Error(), 401, "error", nil))
     }
 
-    return c.JSON(http.StatusOK, map[string]string{"token": token})
+    return c.JSON(http.StatusOK, helper.WrapResponse("Login successful", 200, "success", map[string]interface{}{
+        "email": credentials.Email,
+        "password": "",  
+        "token": token,
+    }))
 }

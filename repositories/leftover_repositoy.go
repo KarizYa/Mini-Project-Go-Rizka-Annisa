@@ -3,6 +3,7 @@ package repositories
 import (
 	"errors"
 	"mini-project/models"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -44,8 +45,10 @@ func (r *leftoverRepository) FindByID(id uint) (models.Leftover, error) {
 }
 
 func (r *leftoverRepository) Update(leftover *models.Leftover) error {
+    leftover.UpdatedAt = time.Now() 
     return r.db.Save(leftover).Error
 }
+
 
 func (r *leftoverRepository) Delete(id uint) error {
     return r.db.Delete(&models.Leftover{}, id).Error

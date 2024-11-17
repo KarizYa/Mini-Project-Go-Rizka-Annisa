@@ -3,41 +3,68 @@ package usecases
 import (
 	"mini-project/models"
 	"mini-project/repositories"
+	"strings"
 )
 
 type TipsUsecase struct {
     TipsRepo repositories.TipsRepository
+    UserRepo repositories.UserRepository
 }
 
-func NewTipsUsecase(tipsRepo repositories.TipsRepository) *TipsUsecase {
+func NewTipsUsecase(tipsRepo repositories.TipsRepository, userRepo repositories.UserRepository) *TipsUsecase {
     return &TipsUsecase{
         TipsRepo: tipsRepo,
+        UserRepo: userRepo,
     }
 }
 
-// Menampilkan semua tips tanpa filter berdasarkan userID
 func (u *TipsUsecase) GetAllTips() ([]models.Tips, error) {
-    // Ambil semua tips tanpa memfilter berdasarkan userID
     return u.TipsRepo.GetAllTips() 
 }
 
-// Menampilkan tips berdasarkan sisa makanan tanpa filter userID
-func (u *TipsUsecase) GetTipsByLeftover(ingredient string) ([]models.Tips, error) {
-    // Ambil tips berdasarkan sisa makanan tanpa memfilter berdasarkan userID
-    return u.TipsRepo.GetTipsByLeftover(ingredient)
+func (u *TipsUsecase) GetTipsByLeftover(leftover string) ([]models.Tips, error) {
+    allTips, err := u.TipsRepo.GetAllTips() 
+    if err != nil {
+        return nil, err
+    }
+
+    var filteredTips []models.Tips
+    for _, tip := range allTips {
+        leftoversList := strings.Split(tip.Leftovers, ",")
+        for _, item := range leftoversList {
+            if strings.TrimSpace(item) == leftover {
+                filteredTips = append(filteredTips, tip)
+                break
+            }
+        }
+    }
+
+    return filteredTips, nil
 }
 
-// Menambahkan tips baru
 func (uc *TipsUsecase) CreateTips(tips models.Tips) error {
-    return uc.TipsRepo.Create(tips)
+    err := uc.TipsRepo.Create(tips)
+    if err != nil {
+        return err
+    }
+
+    user, err := uc.UserRepo.GetByID(tips.UserID) 
+    if err != nil {
+        return err
+    }
+
+    user.Points += 10 
+    if err := uc.UserRepo.Update(user); err != nil {
+        return err
+    }
+
+    return nil
 }
 
-// Memperbarui tips
 func (uc *TipsUsecase) UpdateTips(tips models.Tips) error {
     return uc.TipsRepo.Update(tips)
 }
 
-// Menghapus tips
 func (u *TipsUsecase) DeleteTips(userID uint, tipID uint) error {
     return u.TipsRepo.DeleteTips(userID, tipID)
 }

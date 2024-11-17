@@ -2,6 +2,7 @@ package http
 
 import (
     "mini-project/usecases"
+    "mini-project/helper" 
     "net/http"
     "github.com/labstack/echo/v4"
 )
@@ -10,24 +11,20 @@ type RecipeHandler struct {
     recipeUsecase *usecases.RecipeUsecase
 }
 
-// Fungsi untuk membuat instance RecipeHandler baru
 func NewRecipeHandler(recipeUsecase *usecases.RecipeUsecase) *RecipeHandler {
     return &RecipeHandler{recipeUsecase: recipeUsecase}
 }
 
-// Fungsi handler untuk pencarian resep berdasarkan nama makanan
 func (h *RecipeHandler) SearchRecipesHandler(c echo.Context) error {
     mealName := c.QueryParam("meal_name")
     if mealName == "" {
-        return c.JSON(http.StatusBadRequest, map[string]string{"error": "meal_name query parameter is required"})
+        return c.JSON(http.StatusBadRequest, helper.WrapResponse("meal_name query parameter is required", 400, "error", nil))
     }
 
-    // Mengambil resep berdasarkan nama makanan menggunakan usecase
     recipes, err := h.recipeUsecase.GetRecipesByName(mealName)
     if err != nil {
-        return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+        return c.JSON(http.StatusInternalServerError, helper.WrapResponse(err.Error(), 500, "error", nil))
     }
 
-    // Mengembalikan resep yang ditemukan dalam format JSON
-    return c.JSON(http.StatusOK, recipes)
+    return c.JSON(http.StatusOK, helper.WrapResponse("Successfully fetched recipes", 200, "success", recipes))
 }

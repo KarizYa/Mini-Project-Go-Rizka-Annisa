@@ -13,8 +13,7 @@ func NewRouter(e *echo.Echo, userHandler *http.UserHandler) {
 	e.POST("/login", userHandler.Login)
 }
 
-func InitRoutes(e *echo.Echo, leftoverUsecase usecases.LeftoverUsecase, recipeUsecase *usecases.RecipeUsecase, tipsUsecase *usecases.TipsUsecase) {
-	// Setup Leftover Routes
+func InitRoutes(e *echo.Echo, leftoverUsecase usecases.LeftoverUsecase, recipeUsecase *usecases.RecipeUsecase, tipsUsecase *usecases.TipsUsecase, suggestionUsecase *usecases.SuggestionUseCase, leaderboardUsecase usecases.LeaderboardUsecase) {
 	leftoverHandler := http.NewLeftoverHandler(leftoverUsecase)
 	leftoverGroup := e.Group("/leftovers", middleware.JWTAuthMiddleware)
 
@@ -26,24 +25,32 @@ func InitRoutes(e *echo.Echo, leftoverUsecase usecases.LeftoverUsecase, recipeUs
 	leftoverGroup.PUT("/:id", leftoverHandler.UpdateLeftover)
 	leftoverGroup.DELETE("/:id", leftoverHandler.DeleteLeftover)
 
-	// Setup Recipe Routes
 	recipeHandler := http.NewRecipeHandler(recipeUsecase)
 	recipeGroup := e.Group("/recipes")
 
-	// Menambahkan middleware otentikasi untuk grup resep
-	recipeGroup.Use(middleware.JWTAuthMiddleware)  // Pastikan grup ini dilindungi oleh JWT
+	recipeGroup.Use(middleware.JWTAuthMiddleware)
 
-	// Endpoint untuk pencarian resep
 	recipeGroup.GET("/search", recipeHandler.SearchRecipesHandler)
 
-	// Setup Tips Routes (Hanya pengguna terautentikasi yang dapat mengakses)
 	tipsHandler := http.NewTipsHandler(tipsUsecase)
-	tipsGroup := e.Group("/tips", middleware.JWTAuthMiddleware)  // Menambahkan middleware JWTAuthMiddleware pada grup tips
+	tipsGroup := e.Group("/tips", middleware.JWTAuthMiddleware)
 
-	// Endpoint untuk mengelola tips
 	tipsGroup.GET("", tipsHandler.GetAllTips)
 	tipsGroup.GET("/search", tipsHandler.GetTipsByLeftover)
 	tipsGroup.POST("", tipsHandler.CreateTips)
 	tipsGroup.PUT("/:id", tipsHandler.UpdateTips)
 	tipsGroup.DELETE("/:id", tipsHandler.DeleteTips)
+
+	suggestionHandler := http.NewSuggestionHandler(suggestionUsecase)
+	suggestionGroup := e.Group("/suggestions", middleware.JWTAuthMiddleware)
+
+	suggestionGroup.GET("", suggestionHandler.GetSuggestionsHandler)
+
+	// Leaderboard Endpoints
+	leaderboardHandler := http.NewLeaderboardHandler(leaderboardUsecase)
+	leaderboardGroup := e.Group("/leaderboards", middleware.JWTAuthMiddleware)
+
+	leaderboardGroup.GET("", leaderboardHandler.GetAllLeaderboards)           
+	leaderboardGroup.GET("/:id", leaderboardHandler.GetLeaderboardByID)    
+	leaderboardGroup.POST("", leaderboardHandler.AddToLeaderboard)
 }
