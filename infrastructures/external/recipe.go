@@ -1,41 +1,50 @@
 package external
 
 import (
-    "encoding/json"
-    "fmt"
-    "mini-project/models"
-    "net/http"
+	"crypto/tls"
+	"encoding/json"
+	"fmt"
+	"mini-project/models"
+	"net/http"
 )
 
 type RecipeAPI struct {
-    BaseURL string
+	BaseURL string
 }
 
 func NewRecipeAPI(baseURL string) *RecipeAPI {
-    return &RecipeAPI{
-        BaseURL: baseURL,
-    }
+	return &RecipeAPI{
+		BaseURL: baseURL,
+	}
 }
 
 func (r *RecipeAPI) GetRecipesByName(mealName string) ([]models.Recipe, error) {
-    url := fmt.Sprintf("%s/search.php?s=%s", r.BaseURL, mealName)
-    resp, err := http.Get(url)
-    if err != nil {
-        return nil, err
-    }
-    defer resp.Body.Close()
+	url := fmt.Sprintf("%s/search.php?s=%s", r.BaseURL, mealName)
 
-    if resp.StatusCode != http.StatusOK {
-        return nil, fmt.Errorf("failed to fetch recipes: %s", resp.Status)
-    }
+	// Custom HTTP client with TLS skipping
+	transport := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	client := &http.Client{Transport: transport}
 
-    var result struct {
-        Meals []models.Recipe `json:"meals"`
-    }
-    err = json.NewDecoder(resp.Body).Decode(&result)
-    if err != nil {
-        return nil, err
-    }
+	// Making the GET request
+	resp, err := client.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
 
-    return result.Meals, nil
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("failed to fetch recipes: %s", resp.Status)
+	}
+
+	var result struct {
+		Meals []models.Recipe `json:"meals"`
+	}
+	err = json.NewDecoder(resp.Body).Decode(&result)
+	if err != nil {
+		return nil, err
+	}
+
+	return result.Meals, nil
 }

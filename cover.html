@@ -1,0 +1,1689 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>config: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">mini-project/config/config.go (0.0%)</option>
+				
+				<option value="file1">mini-project/config/migration.go (0.0%)</option>
+				
+				<option value="file2">mini-project/delivery/http/ai_handler.go (0.0%)</option>
+				
+				<option value="file3">mini-project/delivery/http/leaderboard_handler.go (0.0%)</option>
+				
+				<option value="file4">mini-project/delivery/http/leftover_handler.go (0.0%)</option>
+				
+				<option value="file5">mini-project/delivery/http/recipe_handler.go (0.0%)</option>
+				
+				<option value="file6">mini-project/delivery/http/tips_handler.go (0.0%)</option>
+				
+				<option value="file7">mini-project/delivery/http/user_handler.go (0.0%)</option>
+				
+				<option value="file8">mini-project/delivery/middleware/auth_middleware.go (0.0%)</option>
+				
+				<option value="file9">mini-project/helper/response.go (0.0%)</option>
+				
+				<option value="file10">mini-project/infrastructures/external/recipe.go (0.0%)</option>
+				
+				<option value="file11">mini-project/main.go (0.0%)</option>
+				
+				<option value="file12">mini-project/mocks/mock_repository.go (48.9%)</option>
+				
+				<option value="file13">mini-project/models/tips.go (0.0%)</option>
+				
+				<option value="file14">mini-project/repositories/ai_repository.go (0.0%)</option>
+				
+				<option value="file15">mini-project/repositories/leaderboard_repository.go (0.0%)</option>
+				
+				<option value="file16">mini-project/repositories/leftover_repositoy.go (0.0%)</option>
+				
+				<option value="file17">mini-project/repositories/recipe_repository.go (0.0%)</option>
+				
+				<option value="file18">mini-project/repositories/tips_repository.go (0.0%)</option>
+				
+				<option value="file19">mini-project/repositories/user_repository.go (0.0%)</option>
+				
+				<option value="file20">mini-project/routes/router.go (0.0%)</option>
+				
+				<option value="file21">mini-project/usecases/ai_usecase.go (0.0%)</option>
+				
+				<option value="file22">mini-project/usecases/leaderboard_usecase.go (71.4%)</option>
+				
+				<option value="file23">mini-project/usecases/leftover_usecase.go (0.0%)</option>
+				
+				<option value="file24">mini-project/usecases/recipe_usecase.go (0.0%)</option>
+				
+				<option value="file25">mini-project/usecases/tips_usecase.go (0.0%)</option>
+				
+				<option value="file26">mini-project/usecases/user_usecase.go (0.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package config
+
+import (
+        "fmt"
+        "log"
+        "os"
+        "mini-project/models"
+
+        "github.com/joho/godotenv"
+        "gorm.io/driver/mysql"
+        "gorm.io/gorm"
+)
+
+func LoadEnvVariables() <span class="cov0" title="0">{
+    if err := godotenv.Load(); err != nil </span><span class="cov0" title="0">{
+        log.Fatalf("Error loading .env file")
+    }</span>
+}
+
+func InitDB() (*gorm.DB, error) <span class="cov0" title="0">{
+    LoadEnvVariables()
+
+    dbUser := os.Getenv("DB_USER")
+    dbPassword := os.Getenv("DB_PASSWORD")
+    dbName := os.Getenv("DB_NAME")
+    dbHost := os.Getenv("DB_HOST")
+    dbPort := os.Getenv("DB_PORT")
+
+    dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&amp;parseTime=True&amp;loc=Local", dbUser, dbPassword, dbHost, dbPort, dbName)
+    db, err := gorm.Open(mysql.Open(dsn), &amp;gorm.Config{})
+    if err != nil </span><span class="cov0" title="0">{
+        return nil, err
+    }</span>
+
+    <span class="cov0" title="0">db.AutoMigrate(&amp;models.User{}, &amp;models.Leftover{}, &amp;models.Recipe{}, &amp;models.Tips{}, &amp;models.Leaderboard{}) 
+    return db, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package config
+
+import (
+        "log"
+        "mini-project/models"
+
+        "gorm.io/gorm"
+)
+
+func MigrateDatabase(db *gorm.DB) <span class="cov0" title="0">{
+    err := db.AutoMigrate(&amp;models.User{}, &amp;models.Leftover{}, &amp;models.Recipe{}, &amp;models.Tips{}, &amp;models.Leaderboard{})
+    if err != nil </span><span class="cov0" title="0">{
+        log.Fatalf("Error migrating database: %v", err)
+    }</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package http
+
+import (
+        "mini-project/usecases"
+        "net/http"
+
+        "github.com/labstack/echo/v4"
+)
+
+type SuggestionHandler struct {
+        SuggestionUseCase *usecases.SuggestionUseCase
+}
+
+func NewSuggestionHandler(suggestionUseCase *usecases.SuggestionUseCase) *SuggestionHandler <span class="cov0" title="0">{
+        return &amp;SuggestionHandler{
+                SuggestionUseCase: suggestionUseCase,
+        }
+}</span>
+
+func (h *SuggestionHandler) GetSuggestionsHandler(c echo.Context) error <span class="cov0" title="0">{
+        leftover := c.QueryParam("leftover")
+        if leftover == "" </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusBadRequest, map[string]string{
+                        "error": "leftover parameter is required",
+                })
+        }</span>
+
+        <span class="cov0" title="0">suggestion, err := h.SuggestionUseCase.GetSuggestion(leftover)
+        if err != nil </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusInternalServerError, map[string]string{
+                        "error": err.Error(),
+                })
+        }</span>
+
+        <span class="cov0" title="0">return c.JSON(http.StatusOK, suggestion)</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package http
+
+import (
+        "mini-project/usecases"
+        "mini-project/helper" 
+        "net/http"
+        "strconv"
+
+        "github.com/labstack/echo/v4"
+)
+
+type LeaderboardHandler struct {
+        leaderboardUsecase usecases.LeaderboardUsecase
+}
+
+func NewLeaderboardHandler(leaderboardUsecase usecases.LeaderboardUsecase) *LeaderboardHandler <span class="cov0" title="0">{
+        return &amp;LeaderboardHandler{
+                leaderboardUsecase: leaderboardUsecase,
+        }
+}</span>
+
+func (h *LeaderboardHandler) GetAllLeaderboards(c echo.Context) error <span class="cov0" title="0">{
+        leaderboards, err := h.leaderboardUsecase.GetAllLeaderboards()
+        if err != nil </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusInternalServerError, helper.WrapResponse("Failed to retrieve leaderboards", 500, "error", nil))
+        }</span>
+
+        <span class="cov0" title="0">return c.JSON(http.StatusOK, helper.WrapResponse("Successfully retrieved all leaderboards", 200, "success", leaderboards))</span>
+}
+
+func (h *LeaderboardHandler) GetLeaderboardByID(c echo.Context) error <span class="cov0" title="0">{
+        idStr := c.Param("id")
+
+        id, err := strconv.ParseUint(idStr, 10, 32)
+        if err != nil </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusBadRequest, helper.WrapResponse("Invalid ID", 400, "error", nil))
+        }</span>
+
+        <span class="cov0" title="0">leaderboard, err := h.leaderboardUsecase.GetLeaderboardByID(uint(id))
+        if err != nil </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusInternalServerError, helper.WrapResponse("Failed to retrieve leaderboard", 500, "error", nil))
+        }</span>
+
+        <span class="cov0" title="0">return c.JSON(http.StatusOK, helper.WrapResponse("Successfully retrieved leaderboard", 200, "success", leaderboard))</span>
+}
+
+func (h *LeaderboardHandler) AddToLeaderboard(c echo.Context) error <span class="cov0" title="0">{
+        var req struct {
+                UserID uint `json:"user_id"`
+        }
+
+        if err := c.Bind(&amp;req); err != nil </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusBadRequest, helper.WrapResponse("Invalid input", 400, "error", nil))
+        }</span>
+
+        <span class="cov0" title="0">if req.UserID == 0 </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusBadRequest, helper.WrapResponse("User ID is required", 400, "error", nil))
+        }</span>
+
+        <span class="cov0" title="0">createdLeaderboard, err := h.leaderboardUsecase.CreateLeaderboard(req.UserID)
+        if err != nil </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusInternalServerError, helper.WrapResponse("Failed to create leaderboard", 500, "error", nil))
+        }</span>
+
+        <span class="cov0" title="0">return c.JSON(http.StatusCreated, helper.WrapResponse("Successfully added to leaderboard", 201, "success", createdLeaderboard))</span>
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package http
+
+import (
+        "mini-project/models"
+        "mini-project/usecases"
+        "mini-project/helper" 
+        "net/http"
+        "strconv"
+        "github.com/labstack/echo/v4"
+)
+
+type LeftoverHandler struct {
+        Usecase usecases.LeftoverUsecase
+}
+
+func NewLeftoverHandler(u usecases.LeftoverUsecase) *LeftoverHandler <span class="cov0" title="0">{
+        return &amp;LeftoverHandler{Usecase: u}
+}</span>
+
+func (h *LeftoverHandler) CreateLeftover(c echo.Context) error <span class="cov0" title="0">{
+        userID, ok := c.Get("userID").(uint) 
+        if !ok </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusUnauthorized, helper.WrapResponse("User not authenticated", 401, "error", nil))
+        }</span>
+
+        <span class="cov0" title="0">var leftover models.Leftover
+        if err := c.Bind(&amp;leftover); err != nil </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusBadRequest, helper.WrapResponse("Invalid input", 400, "error", nil))
+        }</span>
+
+        <span class="cov0" title="0">leftover.UserID = userID 
+        if err := h.Usecase.CreateLeftover(&amp;leftover); err != nil </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusInternalServerError, helper.WrapResponse("Failed to create leftover", 500, "error", nil))
+        }</span>
+
+        <span class="cov0" title="0">return c.JSON(http.StatusCreated, helper.WrapResponse("Leftover created successfully", 201, "success", leftover))</span>
+}
+
+func (h *LeftoverHandler) GetAllLeftovers(c echo.Context) error <span class="cov0" title="0">{
+        userID, ok := c.Get("userID").(uint) 
+        if !ok </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusUnauthorized, helper.WrapResponse("User not authenticated", 401, "error", nil))
+        }</span>
+
+        <span class="cov0" title="0">leftovers, err := h.Usecase.GetAllLeftovers(userID)
+        if err != nil </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusInternalServerError, helper.WrapResponse("Failed to fetch leftovers", 500, "error", nil))
+        }</span>
+
+        <span class="cov0" title="0">return c.JSON(http.StatusOK, helper.WrapResponse("Successfully fetched leftovers", 200, "success", leftovers))</span>
+}
+
+func (h *LeftoverHandler) GetLeftoverByID(c echo.Context) error <span class="cov0" title="0">{
+        id, err := strconv.Atoi(c.Param("id"))
+        if err != nil </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusBadRequest, helper.WrapResponse("Invalid ID", 400, "error", nil))
+        }</span>
+
+        <span class="cov0" title="0">leftover, err := h.Usecase.GetLeftoverByID(uint(id))
+        if err != nil </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusNotFound, helper.WrapResponse("Leftover not found", 404, "error", nil))
+        }</span>
+
+        <span class="cov0" title="0">return c.JSON(http.StatusOK, helper.WrapResponse("Successfully fetched leftover", 200, "success", leftover))</span>
+}
+
+func (h *LeftoverHandler) UpdateLeftover(c echo.Context) error <span class="cov0" title="0">{
+        var leftover models.Leftover
+        if err := c.Bind(&amp;leftover); err != nil </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusBadRequest, helper.WrapResponse("Invalid input", 400, "error", nil))
+        }</span>
+
+        <span class="cov0" title="0">id, err := strconv.Atoi(c.Param("id"))
+        if err != nil </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusBadRequest, helper.WrapResponse("Invalid ID", 400, "error", nil))
+        }</span>
+
+        <span class="cov0" title="0">existingLeftover, err := h.Usecase.GetLeftoverByID(uint(id))
+        if err != nil </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusNotFound, helper.WrapResponse("Leftover not found", 404, "error", nil))
+        }</span>
+
+        <span class="cov0" title="0">existingLeftover.Name = leftover.Name
+        existingLeftover.Quantity = leftover.Quantity
+        existingLeftover.Unit = leftover.Unit
+        existingLeftover.ExpiryDate = leftover.ExpiryDate
+
+        if err := h.Usecase.UpdateLeftover(&amp;existingLeftover); err != nil </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusInternalServerError, helper.WrapResponse("Failed to update leftover", 500, "error", nil))
+        }</span>
+
+        <span class="cov0" title="0">return c.JSON(http.StatusOK, helper.WrapResponse("Leftover updated successfully", 200, "success", existingLeftover))</span>
+}
+
+
+func (h *LeftoverHandler) DeleteLeftover(c echo.Context) error <span class="cov0" title="0">{
+        id, err := strconv.Atoi(c.Param("id"))
+        if err != nil </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusBadRequest, helper.WrapResponse("Invalid ID", 400, "error", nil))
+        }</span>
+
+        <span class="cov0" title="0">if err := h.Usecase.DeleteLeftover(uint(id)); err != nil </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusInternalServerError, helper.WrapResponse("Failed to delete leftover", 500, "error", nil))
+        }</span>
+
+        <span class="cov0" title="0">return c.JSON(http.StatusOK, helper.WrapResponse("Leftover deleted successfully", 200, "success", nil))</span>
+}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package http
+
+import (
+    "mini-project/usecases"
+    "mini-project/helper" 
+    "net/http"
+    "github.com/labstack/echo/v4"
+)
+
+type RecipeHandler struct {
+    recipeUsecase *usecases.RecipeUsecase
+}
+
+func NewRecipeHandler(recipeUsecase *usecases.RecipeUsecase) *RecipeHandler <span class="cov0" title="0">{
+    return &amp;RecipeHandler{recipeUsecase: recipeUsecase}
+}</span>
+
+func (h *RecipeHandler) SearchRecipesHandler(c echo.Context) error <span class="cov0" title="0">{
+    mealName := c.QueryParam("meal_name")
+    if mealName == "" </span><span class="cov0" title="0">{
+        return c.JSON(http.StatusBadRequest, helper.WrapResponse("meal_name query parameter is required", 400, "error", nil))
+    }</span>
+
+    <span class="cov0" title="0">recipes, err := h.recipeUsecase.GetRecipesByName(mealName)
+    if err != nil </span><span class="cov0" title="0">{
+        return c.JSON(http.StatusInternalServerError, helper.WrapResponse(err.Error(), 500, "error", nil))
+    }</span>
+
+    <span class="cov0" title="0">return c.JSON(http.StatusOK, helper.WrapResponse("Successfully fetched recipes", 200, "success", recipes))</span>
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package http
+
+import (
+        "mini-project/models"
+        "mini-project/usecases"
+        "mini-project/helper" 
+        "net/http"
+        "strconv"
+
+        "github.com/labstack/echo/v4"
+)
+
+type TipsHandler struct {
+        TipsUsecase *usecases.TipsUsecase
+}
+
+func NewTipsHandler(tipsUsecase *usecases.TipsUsecase) *TipsHandler <span class="cov0" title="0">{
+        return &amp;TipsHandler{
+                TipsUsecase: tipsUsecase,
+        }
+}</span>
+
+func (h *TipsHandler) GetAllTips(c echo.Context) error <span class="cov0" title="0">{
+        tips, err := h.TipsUsecase.GetAllTips()
+        if err != nil </span><span class="cov0" title="0">{
+                return echo.NewHTTPError(http.StatusInternalServerError, "Failed to fetch tips")
+        }</span>
+
+        <span class="cov0" title="0">return c.JSON(http.StatusOK, helper.WrapResponse("Successfully fetched all tips", 200, "success", tips))</span>
+}
+
+func (h *TipsHandler) GetTipsByLeftover(c echo.Context) error <span class="cov0" title="0">{
+    leftover := c.QueryParam("leftovers") 
+    if leftover == "" </span><span class="cov0" title="0">{
+        return echo.NewHTTPError(http.StatusBadRequest, "leftovers parameter is required")
+    }</span>
+
+    <span class="cov0" title="0">tips, err := h.TipsUsecase.GetTipsByLeftover(leftover)
+    if err != nil </span><span class="cov0" title="0">{
+        return echo.NewHTTPError(http.StatusInternalServerError, "Failed to fetch tips")
+    }</span>
+
+    <span class="cov0" title="0">return c.JSON(http.StatusOK, helper.WrapResponse("Successfully fetched tips for leftover", 200, "success", tips))</span>
+}
+
+
+func (h *TipsHandler) CreateTips(c echo.Context) error <span class="cov0" title="0">{
+        userID, ok := c.Get("userID").(uint)
+        if !ok </span><span class="cov0" title="0">{
+                return echo.NewHTTPError(http.StatusUnauthorized, "Unauthorized")
+        }</span>
+
+        <span class="cov0" title="0">var req models.Tips
+        if err := c.Bind(&amp;req); err != nil </span><span class="cov0" title="0">{
+                return echo.NewHTTPError(http.StatusBadRequest, "Invalid request payload")
+        }</span>
+
+        <span class="cov0" title="0">req.UserID = userID
+
+        err := h.TipsUsecase.CreateTips(req) 
+        if err != nil </span><span class="cov0" title="0">{
+                return echo.NewHTTPError(http.StatusInternalServerError, "Failed to create tip")
+        }</span>
+
+        <span class="cov0" title="0">return c.JSON(http.StatusCreated, helper.WrapResponse("Successfully created tip", 201, "success", nil))</span>
+}
+
+func (h *TipsHandler) UpdateTips(c echo.Context) error <span class="cov0" title="0">{
+        userID, ok := c.Get("userID").(uint)
+        if !ok </span><span class="cov0" title="0">{
+                return echo.NewHTTPError(http.StatusUnauthorized, "Unauthorized")
+        }</span>
+
+        <span class="cov0" title="0">var req models.Tips
+        if err := c.Bind(&amp;req); err != nil </span><span class="cov0" title="0">{
+                return echo.NewHTTPError(http.StatusBadRequest, "Invalid request payload")
+        }</span>
+
+        <span class="cov0" title="0">req.UserID = userID
+
+        err := h.TipsUsecase.UpdateTips(req) 
+        if err != nil </span><span class="cov0" title="0">{
+                return echo.NewHTTPError(http.StatusInternalServerError, "Failed to update tip")
+        }</span>
+
+        <span class="cov0" title="0">return c.JSON(http.StatusOK, helper.WrapResponse("Successfully updated tip", 200, "success", nil))</span>
+}
+
+func (h *TipsHandler) DeleteTips(c echo.Context) error <span class="cov0" title="0">{
+    userID, ok := c.Get("userID").(uint)
+    if !ok </span><span class="cov0" title="0">{
+        return echo.NewHTTPError(http.StatusUnauthorized, "Unauthorized")
+    }</span>
+
+    <span class="cov0" title="0">idStr := c.Param("id") 
+    id, err := strconv.Atoi(idStr)
+    if err != nil </span><span class="cov0" title="0">{
+        return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
+    }</span>
+
+    <span class="cov0" title="0">err = h.TipsUsecase.DeleteTips(userID, uint(id))
+    if err != nil </span><span class="cov0" title="0">{
+        return echo.NewHTTPError(http.StatusInternalServerError, "Failed to delete tip")
+    }</span>
+
+    <span class="cov0" title="0">return c.JSON(http.StatusOK, helper.WrapResponse("Successfully deleted tip", 200, "success", map[string]interface{}{"id": id}))</span>
+}
+
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package http
+
+import (
+        "mini-project/models"
+        "mini-project/usecases"
+        "mini-project/helper" 
+        "net/http"
+
+        "github.com/labstack/echo/v4"
+)
+
+type UserHandler struct {
+    userUsecase usecases.UserUsecase
+}
+
+func NewUserHandler(userUsecase usecases.UserUsecase) *UserHandler <span class="cov0" title="0">{
+    return &amp;UserHandler{userUsecase}
+}</span>
+
+func (h *UserHandler) Register(c echo.Context) error <span class="cov0" title="0">{
+    var user models.User
+    if err := c.Bind(&amp;user); err != nil </span><span class="cov0" title="0">{
+        return c.JSON(http.StatusBadRequest, helper.WrapResponse("Invalid input", 400, "error", nil))
+    }</span>
+
+    <span class="cov0" title="0">if user.Email == "" || user.Password == "" </span><span class="cov0" title="0">{
+        return c.JSON(http.StatusBadRequest, helper.WrapResponse("Email and password are required", 400, "error", nil))
+    }</span>
+
+    <span class="cov0" title="0">if err := h.userUsecase.Register(user); err != nil </span><span class="cov0" title="0">{
+        return c.JSON(http.StatusInternalServerError, helper.WrapResponse(err.Error(), 500, "error", nil))
+    }</span>
+
+    <span class="cov0" title="0">return c.JSON(http.StatusCreated, helper.WrapResponse("User registered successfully", 201, "success", map[string]interface{}{
+        "email": user.Email,
+        "password": "",
+    }))</span>
+}
+
+func (h *UserHandler) Login(c echo.Context) error <span class="cov0" title="0">{
+    var credentials models.Credentials
+    if err := c.Bind(&amp;credentials); err != nil </span><span class="cov0" title="0">{
+        return c.JSON(http.StatusBadRequest, helper.WrapResponse("Invalid input", 400, "error", nil))
+    }</span>
+
+    <span class="cov0" title="0">if credentials.Email == "" || credentials.Password == "" </span><span class="cov0" title="0">{
+        return c.JSON(http.StatusBadRequest, helper.WrapResponse("Email and password are required", 400, "error", nil))
+    }</span>
+
+    <span class="cov0" title="0">token, err := h.userUsecase.Login(credentials)
+    if err != nil </span><span class="cov0" title="0">{
+        return c.JSON(http.StatusUnauthorized, helper.WrapResponse(err.Error(), 401, "error", nil))
+    }</span>
+
+    <span class="cov0" title="0">return c.JSON(http.StatusOK, helper.WrapResponse("Login successful", 200, "success", map[string]interface{}{
+        "email": credentials.Email,
+        "password": "",  
+        "token": token,
+    }))</span>
+}
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package middleware
+
+import (
+        "log"
+        "net/http"
+        "os"
+        "strings"
+
+        "github.com/dgrijalva/jwt-go"
+        "github.com/joho/godotenv"
+        "github.com/labstack/echo/v4"
+)
+
+func init() <span class="cov0" title="0">{
+        if err := godotenv.Load(); err != nil </span><span class="cov0" title="0">{
+                log.Fatal("Error loading .env file")
+        }</span>
+}
+
+func JWTAuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc <span class="cov0" title="0">{
+        return func(c echo.Context) error </span><span class="cov0" title="0">{
+                authHeader := c.Request().Header.Get("Authorization")
+                if authHeader == "" </span><span class="cov0" title="0">{
+                        log.Println("Authorization header missing")
+                        return echo.NewHTTPError(http.StatusUnauthorized, "Missing Authorization header")
+                }</span>
+
+                <span class="cov0" title="0">tokenString := strings.Replace(authHeader, "Bearer ", "", 1)
+
+                secretKey := os.Getenv("JWT_SECRET_KEY")
+                if secretKey == "" </span><span class="cov0" title="0">{
+                        log.Println("JWT secret key not found in environment variables")
+                        return echo.NewHTTPError(http.StatusInternalServerError, "JWT_SECRET not found in environment variables")
+                }</span>
+
+                <span class="cov0" title="0">token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) </span><span class="cov0" title="0">{
+                        if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok </span><span class="cov0" title="0">{
+                                log.Printf("Unexpected signing method: %v", token.Method)
+                                return nil, echo.NewHTTPError(http.StatusUnauthorized, "Unexpected signing method")
+                        }</span>
+                        <span class="cov0" title="0">return []byte(secretKey), nil</span>
+                })
+
+                <span class="cov0" title="0">if token != nil </span><span class="cov0" title="0">{
+                        log.Printf("Parsed Token: %v", token)
+                }</span>
+
+                <span class="cov0" title="0">if err != nil </span><span class="cov0" title="0">{
+                        log.Printf("Error parsing token: %v", err)
+                        return echo.NewHTTPError(http.StatusUnauthorized, "Invalid or expired token")
+                }</span>
+                <span class="cov0" title="0">if !token.Valid </span><span class="cov0" title="0">{
+                        log.Println("Token is not valid")
+                        return echo.NewHTTPError(http.StatusUnauthorized, "Invalid or expired token")
+                }</span>
+
+                <span class="cov0" title="0">if claims, ok := token.Claims.(jwt.MapClaims); ok </span><span class="cov0" title="0">{
+                        userID := uint(claims["user_id"].(float64)) 
+                        c.Set("userID", userID) 
+
+                        log.Printf("User ID extracted from token: %v", userID)
+
+                        if email, ok := claims["email"].(string); ok </span><span class="cov0" title="0">{
+                                log.Printf("Email extracted from token: %v", email)
+                        }</span> else<span class="cov0" title="0"> {
+                                log.Println("Email claim not found in token")
+                        }</span>
+                } else<span class="cov0" title="0"> {
+                        log.Println("Invalid token claims")
+                        return echo.NewHTTPError(http.StatusUnauthorized, "Invalid token claims")
+                }</span>
+                <span class="cov0" title="0">return next(c)</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package helper 
+
+func WrapResponse(message string, code int, status string, data interface{}) map[string]interface{} <span class="cov0" title="0">{
+    return map[string]interface{}{
+        "meta": map[string]interface{}{
+            "message": message,
+            "code":    code,
+            "status":  status,
+        },
+        "data": data,
+    }
+}</pre>
+		
+		<pre class="file" id="file10" style="display: none">package external
+
+import (
+    "encoding/json"
+    "fmt"
+    "mini-project/models"
+    "net/http"
+)
+
+type RecipeAPI struct {
+    BaseURL string
+}
+
+func NewRecipeAPI(baseURL string) *RecipeAPI <span class="cov0" title="0">{
+    return &amp;RecipeAPI{
+        BaseURL: baseURL,
+    }
+}</span>
+
+func (r *RecipeAPI) GetRecipesByName(mealName string) ([]models.Recipe, error) <span class="cov0" title="0">{
+    url := fmt.Sprintf("%s/search.php?s=%s", r.BaseURL, mealName)
+    resp, err := http.Get(url)
+    if err != nil </span><span class="cov0" title="0">{
+        return nil, err
+    }</span>
+    <span class="cov0" title="0">defer resp.Body.Close()
+
+    if resp.StatusCode != http.StatusOK </span><span class="cov0" title="0">{
+        return nil, fmt.Errorf("failed to fetch recipes: %s", resp.Status)
+    }</span>
+
+    <span class="cov0" title="0">var result struct {
+        Meals []models.Recipe `json:"meals"`
+    }
+    err = json.NewDecoder(resp.Body).Decode(&amp;result)
+    if err != nil </span><span class="cov0" title="0">{
+        return nil, err
+    }</span>
+
+    <span class="cov0" title="0">return result.Meals, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">package main
+
+import (
+        "log"
+        "mini-project/config"
+        "mini-project/delivery/http"
+        "mini-project/infrastructures/external"
+        "mini-project/repositories"
+        "mini-project/routes"
+        "mini-project/usecases"
+
+        "github.com/joho/godotenv"
+        "github.com/labstack/echo/v4"
+)
+
+func main() <span class="cov0" title="0">{
+    err := godotenv.Load()
+    if err != nil </span><span class="cov0" title="0">{
+        log.Fatal("Error loading .env file")
+    }</span>
+
+    <span class="cov0" title="0">db, err := config.InitDB()
+    if err != nil </span><span class="cov0" title="0">{
+        log.Fatal(err)
+    }</span>
+
+    <span class="cov0" title="0">config.MigrateDatabase(db)
+
+    userRepo := repositories.NewUserRepository(db)
+    userUsecase := usecases.NewUserUsecase(userRepo)
+    userHandler := http.NewUserHandler(userUsecase)
+
+    leftoverRepo := repositories.NewLeftoverRepository(db)
+    leftoverUsecase := usecases.NewLeftoverUsecase(leftoverRepo)
+
+    leaderboardRepo := repositories.NewLeaderboardRepository(db)  
+    leaderboardUsecase := usecases.NewLeaderboardUsecase(leaderboardRepo, userRepo)
+
+    geminiRepo := repositories.NewGeminiRepository()
+    suggestionUsecase := usecases.NewSuggestionUseCase(geminiRepo)
+
+    recipeAPI := external.NewRecipeAPI("https://www.themealdb.com/api/json/v1/1")
+    recipeUsecase := usecases.NewRecipeUsecase(recipeAPI)
+
+    tipsRepo := repositories.NewTipsRepository(db)
+    tipsUsecase := usecases.NewTipsUsecase(tipsRepo, userRepo)
+
+    e := echo.New()
+
+    routes.NewRouter(e, userHandler)
+
+    routes.InitRoutes(e, leftoverUsecase, recipeUsecase, tipsUsecase, suggestionUsecase, leaderboardUsecase)
+
+    log.Println("Server started on port 8000")
+    if err := e.Start(":8000"); err != nil </span><span class="cov0" title="0">{
+        log.Fatal(err)
+    }</span>
+}
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">package mocks
+
+import (
+        "mini-project/models"
+        "reflect"
+
+        "github.com/golang/mock/gomock"
+)
+
+// MockLeaderboardRepository adalah mock dari repositories.LeaderboardRepository
+type MockLeaderboardRepository struct {
+        ctrl     *gomock.Controller
+        recorder *MockLeaderboardRepositoryMockRecorder
+}
+
+// NewMockLeaderboardRepository membuat instance baru MockLeaderboardRepository
+func NewMockLeaderboardRepository(ctrl *gomock.Controller) *MockLeaderboardRepository <span class="cov8" title="1">{
+        mock := &amp;MockLeaderboardRepository{ctrl: ctrl}
+        mock.recorder = &amp;MockLeaderboardRepositoryMockRecorder{mock}
+        return mock
+}</span>
+
+// MockLeaderboardRepositoryMockRecorder adalah recorder untuk MockLeaderboardRepository
+type MockLeaderboardRepositoryMockRecorder struct {
+        mock *MockLeaderboardRepository
+}
+
+// EXPECT menyediakan recorder untuk method-method yang ada di MockLeaderboardRepository
+func (m *MockLeaderboardRepository) EXPECT() *MockLeaderboardRepositoryMockRecorder <span class="cov8" title="1">{
+        return m.recorder
+}</span>
+
+// CreateLeaderboard mock untuk metode CreateLeaderboard
+func (m *MockLeaderboardRepository) CreateLeaderboard(leaderboard *models.Leaderboard) error <span class="cov8" title="1">{
+        ret := m.ctrl.Call(m, "CreateLeaderboard", leaderboard)
+        ret0, _ := ret[0].(error)
+        return ret0
+}</span>
+
+// CreateLeaderboard menyediakan recorder untuk CreateLeaderboard
+func (mr *MockLeaderboardRepositoryMockRecorder) CreateLeaderboard(leaderboard interface{}) *gomock.Call <span class="cov8" title="1">{
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateLeaderboard", reflect.TypeOf((*MockLeaderboardRepository)(nil).CreateLeaderboard), leaderboard)
+}</span>
+
+// GetByID mock untuk metode GetByID
+func (m *MockLeaderboardRepository) GetByID(id uint) (models.Leaderboard, error) <span class="cov0" title="0">{
+        ret := m.ctrl.Call(m, "GetByID", id)
+        ret0, _ := ret[0].(models.Leaderboard) // Ubah tipe kembalian menjadi models.Leaderboard
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetByID menyediakan recorder untuk GetByID
+func (mr *MockLeaderboardRepositoryMockRecorder) GetByID(id interface{}) *gomock.Call <span class="cov0" title="0">{
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockLeaderboardRepository)(nil).GetByID), id)
+}</span>
+
+// GetAll mock untuk metode GetAll
+func (m *MockLeaderboardRepository) GetAll() ([]models.Leaderboard, error) <span class="cov0" title="0">{
+        ret := m.ctrl.Call(m, "GetAll")
+        ret0, _ := ret[0].([]models.Leaderboard) // Ubah tipe kembalian menjadi []models.Leaderboard
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetAll menyediakan recorder untuk GetAll
+func (mr *MockLeaderboardRepositoryMockRecorder) GetAll() *gomock.Call <span class="cov0" title="0">{
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockLeaderboardRepository)(nil).GetAll))
+}</span>
+
+// GetByUserID mock untuk metode GetByUserID
+func (m *MockLeaderboardRepository) GetByUserID(userID uint) (models.Leaderboard, error) <span class="cov8" title="1">{
+        ret := m.ctrl.Call(m, "GetByUserID", userID)
+        ret0, _ := ret[0].(models.Leaderboard) // Ubah tipe kembalian menjadi models.Leaderboard
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetByUserID menyediakan recorder untuk GetByUserID
+func (mr *MockLeaderboardRepositoryMockRecorder) GetByUserID(userID interface{}) *gomock.Call <span class="cov8" title="1">{
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByUserID", reflect.TypeOf((*MockLeaderboardRepository)(nil).GetByUserID), userID)
+}</span>
+
+// MockUserRepository adalah mock dari repositories.UserRepository
+type MockUserRepository struct {
+        ctrl     *gomock.Controller
+        recorder *MockUserRepositoryMockRecorder
+}
+
+// NewMockUserRepository membuat instance baru MockUserRepository
+func NewMockUserRepository(ctrl *gomock.Controller) *MockUserRepository <span class="cov8" title="1">{
+        mock := &amp;MockUserRepository{ctrl: ctrl}
+        mock.recorder = &amp;MockUserRepositoryMockRecorder{mock}
+        return mock
+}</span>
+
+// MockUserRepositoryMockRecorder adalah recorder untuk MockUserRepository
+type MockUserRepositoryMockRecorder struct {
+        mock *MockUserRepository
+}
+
+// EXPECT menyediakan recorder untuk method-method yang ada di MockUserRepository
+func (m *MockUserRepository) EXPECT() *MockUserRepositoryMockRecorder <span class="cov8" title="1">{
+        return m.recorder
+}</span>
+
+// GetByID mock untuk metode GetByID
+func (m *MockUserRepository) GetByID(id uint) (models.User, error) <span class="cov8" title="1">{
+        ret := m.ctrl.Call(m, "GetByID", id)
+        ret0, _ := ret[0].(models.User) // Ubah tipe kembalian menjadi models.User
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetByID menyediakan recorder untuk GetByID
+func (mr *MockUserRepositoryMockRecorder) GetByID(id interface{}) *gomock.Call <span class="cov8" title="1">{
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockUserRepository)(nil).GetByID), id)
+}</span>
+
+// GetByEmail mock untuk metode GetByEmail
+func (m *MockUserRepository) GetByEmail(email string) (models.User, error) <span class="cov0" title="0">{
+        ret := m.ctrl.Call(m, "GetByEmail", email)
+        ret0, _ := ret[0].(models.User) // Ubah tipe kembalian menjadi models.User
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// GetByEmail menyediakan recorder untuk GetByEmail
+func (mr *MockUserRepositoryMockRecorder) GetByEmail(email interface{}) *gomock.Call <span class="cov0" title="0">{
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByEmail", reflect.TypeOf((*MockUserRepository)(nil).GetByEmail), email)
+}</span>
+
+// Register mock untuk metode Register
+func (m *MockUserRepository) Register(user models.User) error <span class="cov0" title="0">{
+    ret := m.ctrl.Call(m, "Register", user)
+    ret0, _ := ret[0].(error)
+    return ret0
+}</span>
+
+// Register menyediakan recorder untuk Register
+func (mr *MockUserRepositoryMockRecorder) Register(user interface{}) *gomock.Call <span class="cov0" title="0">{
+    return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Register", reflect.TypeOf((*MockUserRepository)(nil).Register), user)
+}</span>
+
+// Update mock untuk metode Update
+func (m *MockUserRepository) Update(user models.User) error <span class="cov0" title="0">{
+    ret := m.ctrl.Call(m, "Update", user)
+    ret0, _ := ret[0].(error)
+    return ret0
+}</span>
+
+// Update menyediakan recorder untuk Update
+func (mr *MockUserRepositoryMockRecorder) Update(user interface{}) *gomock.Call <span class="cov0" title="0">{
+    return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockUserRepository)(nil).Update), user)
+}</span>
+
+
+</pre>
+		
+		<pre class="file" id="file13" style="display: none">package models
+
+import (
+    "strings"
+    "time"
+)
+
+type Tips struct {
+    ID        uint     `json:"id" gorm:"primaryKey;autoIncrement"`       
+    UserID    uint     `json:"user_id"`  
+    Title     string   `json:"title"`
+    Content   string   `json:"content"`
+    Leftovers string   `json:"leftovers"`
+    CreatedAt time.Time
+    UpdatedAt time.Time
+}
+
+func (t *Tips) GetLeftoversSlice() []string <span class="cov0" title="0">{
+    if t.Leftovers == "" </span><span class="cov0" title="0">{
+        return []string{}
+    }</span>
+    <span class="cov0" title="0">return strings.Split(t.Leftovers, ",")</span>
+}
+
+func (t *Tips) SetLeftoversSlice(leftovers []string) <span class="cov0" title="0">{
+    t.Leftovers = strings.Join(leftovers, ",")
+}</span>
+</pre>
+		
+		<pre class="file" id="file14" style="display: none">package repositories
+
+import (
+        "context"
+        "fmt"
+        "log"
+        "os"
+
+        "github.com/google/generative-ai-go/genai"
+        "google.golang.org/api/option"
+)
+
+type GeminiRepository struct {
+        Client *genai.Client
+}
+
+func NewGeminiRepository() *GeminiRepository <span class="cov0" title="0">{
+        apiKey := os.Getenv("GEMINI_API_KEY") 
+        if apiKey == "" </span><span class="cov0" title="0">{
+                log.Fatal("Gemini API key is missing")
+        }</span>
+
+        <span class="cov0" title="0">client, err := genai.NewClient(context.Background(), option.WithAPIKey(apiKey))
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatalf("Failed to create Gemini AI client: %v", err)
+        }</span>
+
+        <span class="cov0" title="0">return &amp;GeminiRepository{
+                Client: client,
+        }</span>
+}
+
+func (repo *GeminiRepository) GetStorageSuggestions(leftover string) (string, error) <span class="cov0" title="0">{
+    model := repo.Client.GenerativeModel("gemini-1.5-flash")
+    resp, err := model.GenerateContent(context.Background(), genai.Text(fmt.Sprintf("How should I store %s?", leftover)))
+    if err != nil </span><span class="cov0" title="0">{
+        return "", fmt.Errorf("failed to fetch suggestions: %v", err)
+    }</span>
+
+    <span class="cov0" title="0">for _, cand := range resp.Candidates </span><span class="cov0" title="0">{
+        if cand.Content != nil </span><span class="cov0" title="0">{
+            for _, part := range cand.Content.Parts </span><span class="cov0" title="0">{
+                return fmt.Sprint(part), nil 
+            }</span>
+        }
+    }
+
+    <span class="cov0" title="0">return "", fmt.Errorf("no suggestions found")</span>
+}
+</pre>
+		
+		<pre class="file" id="file15" style="display: none">package repositories
+
+import (
+        "mini-project/models"
+        "gorm.io/gorm"
+)
+
+type LeaderboardRepository interface {
+        GetAll() ([]models.Leaderboard, error)
+        GetByID(id uint) (models.Leaderboard, error)
+        GetByUserID(userID uint) (models.Leaderboard, error)
+        CreateLeaderboard(leaderboard *models.Leaderboard) error
+}
+
+type leaderboardRepository struct {
+        DB *gorm.DB
+}
+
+func NewLeaderboardRepository(DB *gorm.DB) LeaderboardRepository <span class="cov0" title="0">{
+        return &amp;leaderboardRepository{DB: DB}
+}</span>
+
+func (repo *leaderboardRepository) GetAll() ([]models.Leaderboard, error) <span class="cov0" title="0">{
+        var leaderboards []models.Leaderboard
+        err := repo.DB.Order("points desc").Find(&amp;leaderboards).Error
+        return leaderboards, err
+}</span>
+
+func (repo *leaderboardRepository) GetByID(id uint) (models.Leaderboard, error) <span class="cov0" title="0">{
+        var leaderboard models.Leaderboard
+        err := repo.DB.First(&amp;leaderboard, id).Error
+        return leaderboard, err
+}</span>
+
+func (repo *leaderboardRepository) GetByUserID(userID uint) (models.Leaderboard, error) <span class="cov0" title="0">{
+        var leaderboard models.Leaderboard
+        err := repo.DB.Where("user_id = ?", userID).First(&amp;leaderboard).Error
+        if err != nil </span><span class="cov0" title="0">{
+                return models.Leaderboard{}, err
+        }</span>
+        <span class="cov0" title="0">return leaderboard, nil</span>
+}
+
+func (repo *leaderboardRepository) CreateLeaderboard(leaderboard *models.Leaderboard) error <span class="cov0" title="0">{
+        return repo.DB.Create(leaderboard).Error
+}</span>
+</pre>
+		
+		<pre class="file" id="file16" style="display: none">package repositories
+
+import (
+        "errors"
+        "mini-project/models"
+        "time"
+
+        "gorm.io/gorm"
+)
+
+type LeftoverRepository interface {
+    Create(leftover *models.Leftover) error
+    FindAll(userID uint) ([]models.Leftover, error)
+    FindByID(id uint) (models.Leftover, error)
+    Update(leftover *models.Leftover) error
+    Delete(id uint) error
+}
+
+type leftoverRepository struct {
+    db *gorm.DB
+}
+
+func NewLeftoverRepository(db *gorm.DB) LeftoverRepository <span class="cov0" title="0">{
+    return &amp;leftoverRepository{db}
+}</span>
+
+func (r *leftoverRepository) Create(leftover *models.Leftover) error <span class="cov0" title="0">{
+    return r.db.Create(leftover).Error
+}</span>
+
+func (r *leftoverRepository) FindAll(userID uint) ([]models.Leftover, error) <span class="cov0" title="0">{
+    var leftovers []models.Leftover
+    if err := r.db.Where("user_id = ?", userID).Find(&amp;leftovers).Error; err != nil </span><span class="cov0" title="0">{
+        return nil, err
+    }</span>
+    <span class="cov0" title="0">return leftovers, nil</span>
+}
+
+func (r *leftoverRepository) FindByID(id uint) (models.Leftover, error) <span class="cov0" title="0">{
+    var leftover models.Leftover
+    if err := r.db.First(&amp;leftover, id).Error; err != nil </span><span class="cov0" title="0">{
+        return leftover, errors.New("leftover not found")
+    }</span>
+    <span class="cov0" title="0">return leftover, nil</span>
+}
+
+func (r *leftoverRepository) Update(leftover *models.Leftover) error <span class="cov0" title="0">{
+    leftover.UpdatedAt = time.Now() 
+    return r.db.Save(leftover).Error
+}</span>
+
+
+func (r *leftoverRepository) Delete(id uint) error <span class="cov0" title="0">{
+    return r.db.Delete(&amp;models.Leftover{}, id).Error
+}</span>
+</pre>
+		
+		<pre class="file" id="file17" style="display: none">package repositories
+
+import "mini-project/models"
+
+type RecipeRepository interface {
+    FindByID(id string) (models.Recipe, error)
+}
+
+type recipeRepository struct{}
+
+func NewRecipeRepository() RecipeRepository <span class="cov0" title="0">{
+    return &amp;recipeRepository{}
+}</span>
+
+func (r *recipeRepository) FindByID(id string) (models.Recipe, error) <span class="cov0" title="0">{
+    return models.Recipe{}, nil
+}</span>
+</pre>
+		
+		<pre class="file" id="file18" style="display: none">package repositories
+
+import (
+        "mini-project/models"
+        "gorm.io/gorm"
+)
+
+type TipsRepository interface {
+    GetAllTips() ([]models.Tips, error) 
+    GetTipsByLeftover(ingredient string) ([]models.Tips, error) 
+    Create(tips models.Tips) error
+    Update(tips models.Tips) error
+    DeleteTips(userID uint, tipID uint) error
+}
+
+type tipsRepository struct {
+    DB *gorm.DB
+}
+
+func NewTipsRepository(DB *gorm.DB) TipsRepository <span class="cov0" title="0">{
+    return &amp;tipsRepository{DB}
+}</span>
+
+func (r *tipsRepository) GetAllTips() ([]models.Tips, error) <span class="cov0" title="0">{
+    var tips []models.Tips
+    if err := r.DB.Find(&amp;tips).Error; err != nil </span><span class="cov0" title="0">{
+        return nil, err
+    }</span>
+    <span class="cov0" title="0">return tips, nil</span>
+}
+
+func (r *tipsRepository) GetTipsByLeftover(leftover string) ([]models.Tips, error) <span class="cov0" title="0">{
+    var tips []models.Tips
+    if err := r.DB.Where("leftovers LIKE ?", "%"+leftover+"%").Find(&amp;tips).Error; err != nil </span><span class="cov0" title="0">{
+        return nil, err
+    }</span>
+    <span class="cov0" title="0">return tips, nil</span>
+}
+
+
+func (r *tipsRepository) Create(tips models.Tips) error <span class="cov0" title="0">{
+    return r.DB.Create(&amp;tips).Error
+}</span>
+
+func (r *tipsRepository) Update(tips models.Tips) error <span class="cov0" title="0">{
+    return r.DB.Save(&amp;tips).Error
+}</span>
+
+func (r *tipsRepository) DeleteTips(userID uint, tipID uint) error <span class="cov0" title="0">{
+    return r.DB.Where("user_id = ? AND id = ?", userID, tipID).Delete(&amp;models.Tips{}).Error
+}</span>
+</pre>
+		
+		<pre class="file" id="file19" style="display: none">package repositories
+
+import (
+    "errors"
+    "log"
+    "mini-project/models"
+
+    "gorm.io/gorm"
+)
+
+type UserRepository interface {
+    Register(user models.User) error
+    GetByEmail(email string) (models.User, error)
+    GetByID(userID uint) (models.User, error) 
+    Update(user models.User) error          
+}
+
+
+type userRepository struct {
+    db *gorm.DB
+}
+
+func NewUserRepository(db *gorm.DB) UserRepository <span class="cov0" title="0">{
+    return &amp;userRepository{db}
+}</span>
+
+func (r *userRepository) Register(user models.User) error <span class="cov0" title="0">{
+    result := r.db.Create(&amp;user)
+    if result.Error != nil </span><span class="cov0" title="0">{
+        return result.Error
+    }</span>
+    <span class="cov0" title="0">return nil</span>
+}
+
+func (r *userRepository) GetByEmail(email string) (models.User, error) <span class="cov0" title="0">{
+    var user models.User
+    result := r.db.Where("email = ? AND (deleted_at IS NULL OR deleted_at = '0000-00-00 00:00:00.000')", email).First(&amp;user)
+    
+    log.Printf("Querying for user with email: %s", email)
+
+    if result.Error != nil </span><span class="cov0" title="0">{
+        if errors.Is(result.Error, gorm.ErrRecordNotFound) </span><span class="cov0" title="0">{
+            log.Printf("User not found with email: %s", email)
+            return user, errors.New("user not found")
+        }</span>
+        <span class="cov0" title="0">log.Printf("Error retrieving user with email: %s, Error: %v", email, result.Error)
+        return user, result.Error</span>
+    }
+
+    <span class="cov0" title="0">log.Printf("User found: %+v", user)
+    return user, nil</span>
+}
+
+func (r *userRepository) Update(user models.User) error <span class="cov0" title="0">{
+    return r.db.Save(&amp;user).Error
+}</span>
+
+func (r *userRepository) GetByID(userID uint) (models.User, error) <span class="cov0" title="0">{
+    var user models.User
+    result := r.db.First(&amp;user, userID)
+    if result.Error != nil </span><span class="cov0" title="0">{
+        return user, result.Error
+    }</span>
+    <span class="cov0" title="0">return user, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file20" style="display: none">package routes
+
+import (
+        "mini-project/delivery/http"
+        "mini-project/delivery/middleware"
+        "mini-project/usecases"
+
+        "github.com/labstack/echo/v4"
+)
+
+func NewRouter(e *echo.Echo, userHandler *http.UserHandler) <span class="cov0" title="0">{
+        e.POST("/register", userHandler.Register)
+        e.POST("/login", userHandler.Login)
+}</span>
+
+func InitRoutes(e *echo.Echo, leftoverUsecase usecases.LeftoverUsecase, recipeUsecase *usecases.RecipeUsecase, tipsUsecase *usecases.TipsUsecase, suggestionUsecase *usecases.SuggestionUseCase, leaderboardUsecase usecases.LeaderboardUsecase) <span class="cov0" title="0">{
+        leftoverHandler := http.NewLeftoverHandler(leftoverUsecase)
+        leftoverGroup := e.Group("/leftovers", middleware.JWTAuthMiddleware)
+
+        leftoverGroup.Use(middleware.JWTAuthMiddleware)
+
+        leftoverGroup.POST("", leftoverHandler.CreateLeftover)
+        leftoverGroup.GET("", leftoverHandler.GetAllLeftovers)
+        leftoverGroup.GET("/:id", leftoverHandler.GetLeftoverByID)
+        leftoverGroup.PUT("/:id", leftoverHandler.UpdateLeftover)
+        leftoverGroup.DELETE("/:id", leftoverHandler.DeleteLeftover)
+
+        recipeHandler := http.NewRecipeHandler(recipeUsecase)
+        recipeGroup := e.Group("/recipes")
+
+        recipeGroup.Use(middleware.JWTAuthMiddleware)
+
+        recipeGroup.GET("/search", recipeHandler.SearchRecipesHandler)
+
+        tipsHandler := http.NewTipsHandler(tipsUsecase)
+        tipsGroup := e.Group("/tips", middleware.JWTAuthMiddleware)
+
+        tipsGroup.GET("", tipsHandler.GetAllTips)
+        tipsGroup.GET("/search", tipsHandler.GetTipsByLeftover)
+        tipsGroup.POST("", tipsHandler.CreateTips)
+        tipsGroup.PUT("/:id", tipsHandler.UpdateTips)
+        tipsGroup.DELETE("/:id", tipsHandler.DeleteTips)
+
+        suggestionHandler := http.NewSuggestionHandler(suggestionUsecase)
+        suggestionGroup := e.Group("/suggestions", middleware.JWTAuthMiddleware)
+
+        suggestionGroup.GET("", suggestionHandler.GetSuggestionsHandler)
+
+        // Leaderboard Endpoints
+        leaderboardHandler := http.NewLeaderboardHandler(leaderboardUsecase)
+        leaderboardGroup := e.Group("/leaderboards", middleware.JWTAuthMiddleware)
+
+        leaderboardGroup.GET("", leaderboardHandler.GetAllLeaderboards)           
+        leaderboardGroup.GET("/:id", leaderboardHandler.GetLeaderboardByID)    
+        leaderboardGroup.POST("", leaderboardHandler.AddToLeaderboard)
+}</span>
+</pre>
+		
+		<pre class="file" id="file21" style="display: none">package usecases
+
+import (
+        "mini-project/models"
+        "mini-project/repositories"
+)
+
+type SuggestionUseCase struct {
+        Repository *repositories.GeminiRepository
+}
+
+func NewSuggestionUseCase(repo *repositories.GeminiRepository) *SuggestionUseCase <span class="cov0" title="0">{
+        return &amp;SuggestionUseCase{
+                Repository: repo,
+        }
+}</span>
+
+func (uc *SuggestionUseCase) GetSuggestion(leftover string) (*models.Suggestion, error) <span class="cov0" title="0">{
+        suggestionText, err := uc.Repository.GetStorageSuggestions(leftover)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return &amp;models.Suggestion{
+                Leftover:   leftover,
+                Suggestion: suggestionText,
+        }, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file22" style="display: none">package usecases
+
+import (
+        "errors"
+        "mini-project/models"
+        "mini-project/repositories"
+)
+
+type LeaderboardUsecase interface {
+        GetAllLeaderboards() ([]models.Leaderboard, error)
+        GetLeaderboardByID(id uint) (models.Leaderboard, error)
+        CreateLeaderboard(userID uint) (models.Leaderboard, error)
+}
+
+type leaderboardUsecase struct {
+        leaderboardRepo repositories.LeaderboardRepository
+        userRepo        repositories.UserRepository
+}
+
+func NewLeaderboardUsecase(
+        leaderboardRepo repositories.LeaderboardRepository,
+        userRepo repositories.UserRepository,
+) LeaderboardUsecase <span class="cov8" title="1">{
+        return &amp;leaderboardUsecase{
+                leaderboardRepo: leaderboardRepo,
+                userRepo:        userRepo,
+        }
+}</span>
+
+func (uc *leaderboardUsecase) GetAllLeaderboards() ([]models.Leaderboard, error) <span class="cov0" title="0">{
+        return uc.leaderboardRepo.GetAll()
+}</span>
+
+func (uc *leaderboardUsecase) GetLeaderboardByID(id uint) (models.Leaderboard, error) <span class="cov0" title="0">{
+        return uc.leaderboardRepo.GetByID(id)
+}</span>
+
+func (uc *leaderboardUsecase) CreateLeaderboard(userID uint) (models.Leaderboard, error) <span class="cov8" title="1">{
+        user, err := uc.userRepo.GetByID(userID)
+        if err != nil </span><span class="cov8" title="1">{
+                return models.Leaderboard{}, errors.New("user not found")
+        }</span>
+
+        <span class="cov8" title="1">existingLeaderboard, _ := uc.leaderboardRepo.GetByUserID(userID)
+        if existingLeaderboard.ID != 0 </span><span class="cov0" title="0">{
+                return models.Leaderboard{}, errors.New("user already exists in the leaderboard")
+        }</span>
+
+        <span class="cov8" title="1">newLeaderboard := models.Leaderboard{
+                UserID: user.ID,
+                Points: user.Points,
+        }
+
+        err = uc.leaderboardRepo.CreateLeaderboard(&amp;newLeaderboard)
+        if err != nil </span><span class="cov0" title="0">{
+                return models.Leaderboard{}, errors.New("failed to create leaderboard")
+        }</span>
+
+        <span class="cov8" title="1">return newLeaderboard, nil</span>
+}
+
+</pre>
+		
+		<pre class="file" id="file23" style="display: none">package usecases
+
+import (
+        "mini-project/models"
+        "mini-project/repositories"
+)
+
+type LeftoverUsecase interface {
+    CreateLeftover(leftover *models.Leftover) error
+    GetAllLeftovers(userID uint) ([]models.Leftover, error)
+    GetLeftoverByID(id uint) (models.Leftover, error)
+    UpdateLeftover(leftover *models.Leftover) error
+    DeleteLeftover(id uint) error
+}
+
+type leftoverUsecase struct {
+    repository repositories.LeftoverRepository
+}
+
+func NewLeftoverUsecase(repository repositories.LeftoverRepository) LeftoverUsecase <span class="cov0" title="0">{
+    return &amp;leftoverUsecase{repository}
+}</span>
+
+func (u *leftoverUsecase) CreateLeftover(leftover *models.Leftover) error <span class="cov0" title="0">{
+    return u.repository.Create(leftover)
+}</span>
+
+func (u *leftoverUsecase) GetAllLeftovers(userID uint) ([]models.Leftover, error) <span class="cov0" title="0">{
+    return u.repository.FindAll(userID)
+}</span>
+
+func (u *leftoverUsecase) GetLeftoverByID(id uint) (models.Leftover, error) <span class="cov0" title="0">{
+    return u.repository.FindByID(id)
+}</span>
+
+func (u *leftoverUsecase) UpdateLeftover(leftover *models.Leftover) error <span class="cov0" title="0">{
+        return u.repository.Update(leftover)
+}</span>
+
+func (u *leftoverUsecase) DeleteLeftover(id uint) error <span class="cov0" title="0">{
+    return u.repository.Delete(id)
+}</span>
+</pre>
+		
+		<pre class="file" id="file24" style="display: none">package usecases
+
+import (
+        "mini-project/infrastructures/external"
+        "mini-project/models"
+)
+
+type RecipeUsecase struct {
+    recipeAPI *external.RecipeAPI
+}
+
+func NewRecipeUsecase(recipeAPI *external.RecipeAPI) *RecipeUsecase <span class="cov0" title="0">{
+    return &amp;RecipeUsecase{recipeAPI: recipeAPI}
+}</span>
+
+func (u *RecipeUsecase) GetRecipesByName(mealName string) ([]models.Recipe, error) <span class="cov0" title="0">{
+    return u.recipeAPI.GetRecipesByName(mealName)
+}</span>
+</pre>
+		
+		<pre class="file" id="file25" style="display: none">package usecases
+
+import (
+        "mini-project/models"
+        "mini-project/repositories"
+        "strings"
+)
+
+type TipsUsecase struct {
+    TipsRepo repositories.TipsRepository
+    UserRepo repositories.UserRepository
+}
+
+func NewTipsUsecase(tipsRepo repositories.TipsRepository, userRepo repositories.UserRepository) *TipsUsecase <span class="cov0" title="0">{
+    return &amp;TipsUsecase{
+        TipsRepo: tipsRepo,
+        UserRepo: userRepo,
+    }
+}</span>
+
+func (u *TipsUsecase) GetAllTips() ([]models.Tips, error) <span class="cov0" title="0">{
+    return u.TipsRepo.GetAllTips() 
+}</span>
+
+func (u *TipsUsecase) GetTipsByLeftover(leftover string) ([]models.Tips, error) <span class="cov0" title="0">{
+    allTips, err := u.TipsRepo.GetAllTips() 
+    if err != nil </span><span class="cov0" title="0">{
+        return nil, err
+    }</span>
+
+    <span class="cov0" title="0">var filteredTips []models.Tips
+    for _, tip := range allTips </span><span class="cov0" title="0">{
+        leftoversList := strings.Split(tip.Leftovers, ",")
+        for _, item := range leftoversList </span><span class="cov0" title="0">{
+            if strings.TrimSpace(item) == leftover </span><span class="cov0" title="0">{
+                filteredTips = append(filteredTips, tip)
+                break</span>
+            }
+        }
+    }
+
+    <span class="cov0" title="0">return filteredTips, nil</span>
+}
+
+func (uc *TipsUsecase) CreateTips(tips models.Tips) error <span class="cov0" title="0">{
+    err := uc.TipsRepo.Create(tips)
+    if err != nil </span><span class="cov0" title="0">{
+        return err
+    }</span>
+
+    <span class="cov0" title="0">user, err := uc.UserRepo.GetByID(tips.UserID) 
+    if err != nil </span><span class="cov0" title="0">{
+        return err
+    }</span>
+
+    <span class="cov0" title="0">user.Points += 10 
+    if err := uc.UserRepo.Update(user); err != nil </span><span class="cov0" title="0">{
+        return err
+    }</span>
+
+    <span class="cov0" title="0">return nil</span>
+}
+
+func (uc *TipsUsecase) UpdateTips(tips models.Tips) error <span class="cov0" title="0">{
+    return uc.TipsRepo.Update(tips)
+}</span>
+
+func (u *TipsUsecase) DeleteTips(userID uint, tipID uint) error <span class="cov0" title="0">{
+    return u.TipsRepo.DeleteTips(userID, tipID)
+}</span>
+</pre>
+		
+		<pre class="file" id="file26" style="display: none">package usecases
+
+import (
+        "errors"
+        "log"
+        "mini-project/models"
+        "mini-project/repositories"
+        "os"
+        "time"
+
+        "github.com/dgrijalva/jwt-go"
+        "github.com/joho/godotenv"
+        "golang.org/x/crypto/bcrypt"
+)
+
+type UserUsecase interface {
+    Register(user models.User) error
+    Login(credentials models.Credentials) (string, error) 
+}
+
+type userUsecase struct {
+    userRepo repositories.UserRepository
+}
+
+func NewUserUsecase(userRepo repositories.UserRepository) UserUsecase <span class="cov0" title="0">{
+    return &amp;userUsecase{userRepo}
+}</span>
+
+func (u *userUsecase) Register(user models.User) error <span class="cov0" title="0">{
+    hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+    if err != nil </span><span class="cov0" title="0">{
+        log.Printf("Error hashing password for email %s", user.Email) 
+        return errors.New("failed to hash password")
+    }</span>
+    <span class="cov0" title="0">user.Password = string(hashedPassword)
+
+    if err := u.userRepo.Register(user); err != nil </span><span class="cov0" title="0">{
+        log.Printf("Error saving user to the database: %v", err) 
+        return err
+    }</span>
+
+    <span class="cov0" title="0">log.Printf("Success: User registered with email %s", user.Email) 
+    return nil</span>
+}
+
+func (u *userUsecase) Login(credentials models.Credentials) (string, error) <span class="cov0" title="0">{
+    user, err := u.userRepo.GetByEmail(credentials.Email)
+    if err != nil </span><span class="cov0" title="0">{
+        log.Printf("Error: User not found with email %s", credentials.Email) 
+        return "", errors.New("user not found") 
+    }</span>
+
+    <span class="cov0" title="0">err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(credentials.Password))
+    if err != nil </span><span class="cov0" title="0">{
+        log.Printf("Error: Password mismatch for email %s", credentials.Email) 
+        return "", errors.New("incorrect password") 
+    }</span>
+
+    <span class="cov0" title="0">log.Printf("Success: Password matched for email %s", credentials.Email)
+
+    token, err := generateJWT(user.ID, user.Email)
+    if err != nil </span><span class="cov0" title="0">{
+        log.Printf("Error: Failed to generate token for email %s", credentials.Email) 
+        return "", errors.New("failed to generate token")
+    }</span>
+
+    <span class="cov0" title="0">log.Printf("Success: Token generated for email %s", credentials.Email) 
+
+    return token, nil</span>
+}
+
+func generateJWT(userID uint, email string) (string, error) <span class="cov0" title="0">{
+    if err := godotenv.Load(); err != nil </span><span class="cov0" title="0">{
+        log.Fatal("Error loading .env file") 
+        return "", err
+    }</span>
+
+    <span class="cov0" title="0">secretKey := os.Getenv("JWT_SECRET_KEY")
+    if secretKey == "" </span><span class="cov0" title="0">{
+        return "", errors.New("JWT_SECRET_KEY is not set in .env")
+    }</span>
+
+    <span class="cov0" title="0">claims := jwt.MapClaims{
+        "user_id": userID,  
+        "email":   email,
+        "exp":     time.Now().Add(time.Hour * 72).Unix(), 
+    }
+
+    token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+    signedToken, err := token.SignedString([]byte(secretKey))
+    if err != nil </span><span class="cov0" title="0">{
+        log.Printf("Error signing JWT token for email %s", email)
+        return "", err
+    }</span>
+
+    <span class="cov0" title="0">return signedToken, nil</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
