@@ -13,7 +13,7 @@ func NewRouter(e *echo.Echo, userHandler *http.UserHandler) {
 	e.POST("/login", userHandler.Login)
 }
 
-func InitRoutes(e *echo.Echo, leftoverUsecase usecases.LeftoverUsecase, recipeUsecase *usecases.RecipeUsecase, tipsUsecase *usecases.TipsUsecase, suggestionUsecase *usecases.SuggestionUseCase) {
+func InitRoutes(e *echo.Echo, leftoverUsecase usecases.LeftoverUsecase, recipeUsecase *usecases.RecipeUsecase, tipsUsecase *usecases.TipsUsecase, suggestionUsecase *usecases.SuggestionUseCase, leaderboardUsecase usecases.LeaderboardUsecase) {
 	leftoverHandler := http.NewLeftoverHandler(leftoverUsecase)
 	leftoverGroup := e.Group("/leftovers", middleware.JWTAuthMiddleware)
 
@@ -28,12 +28,12 @@ func InitRoutes(e *echo.Echo, leftoverUsecase usecases.LeftoverUsecase, recipeUs
 	recipeHandler := http.NewRecipeHandler(recipeUsecase)
 	recipeGroup := e.Group("/recipes")
 
-	recipeGroup.Use(middleware.JWTAuthMiddleware) 
+	recipeGroup.Use(middleware.JWTAuthMiddleware)
 
 	recipeGroup.GET("/search", recipeHandler.SearchRecipesHandler)
 
 	tipsHandler := http.NewTipsHandler(tipsUsecase)
-	tipsGroup := e.Group("/tips", middleware.JWTAuthMiddleware) 
+	tipsGroup := e.Group("/tips", middleware.JWTAuthMiddleware)
 
 	tipsGroup.GET("", tipsHandler.GetAllTips)
 	tipsGroup.GET("/search", tipsHandler.GetTipsByLeftover)
@@ -45,4 +45,12 @@ func InitRoutes(e *echo.Echo, leftoverUsecase usecases.LeftoverUsecase, recipeUs
 	suggestionGroup := e.Group("/suggestions", middleware.JWTAuthMiddleware)
 
 	suggestionGroup.GET("", suggestionHandler.GetSuggestionsHandler)
+
+	// Leaderboard Endpoints
+	leaderboardHandler := http.NewLeaderboardHandler(leaderboardUsecase)
+	leaderboardGroup := e.Group("/leaderboards", middleware.JWTAuthMiddleware)
+
+	leaderboardGroup.GET("", leaderboardHandler.GetAllLeaderboards)           
+	leaderboardGroup.GET("/:id", leaderboardHandler.GetLeaderboardByID)    
+	leaderboardGroup.POST("", leaderboardHandler.AddToLeaderboard)
 }

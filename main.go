@@ -33,6 +33,9 @@ func main() {
     leftoverRepo := repositories.NewLeftoverRepository(db)
     leftoverUsecase := usecases.NewLeftoverUsecase(leftoverRepo)
 
+    leaderboardRepo := repositories.NewLeaderboardRepository(db)  
+    leaderboardUsecase := usecases.NewLeaderboardUsecase(leaderboardRepo, userRepo)
+
     geminiRepo := repositories.NewGeminiRepository()
     suggestionUsecase := usecases.NewSuggestionUseCase(geminiRepo)
 
@@ -40,13 +43,13 @@ func main() {
     recipeUsecase := usecases.NewRecipeUsecase(recipeAPI)
 
     tipsRepo := repositories.NewTipsRepository(db)
-    tipsUsecase := usecases.NewTipsUsecase(tipsRepo, userRepo) 
+    tipsUsecase := usecases.NewTipsUsecase(tipsRepo, userRepo)
 
     e := echo.New()
 
     routes.NewRouter(e, userHandler)
 
-    routes.InitRoutes(e, leftoverUsecase, recipeUsecase, tipsUsecase, suggestionUsecase)
+    routes.InitRoutes(e, leftoverUsecase, recipeUsecase, tipsUsecase, suggestionUsecase, leaderboardUsecase)
 
     log.Println("Server started on port 8000")
     if err := e.Start(":8000"); err != nil {
